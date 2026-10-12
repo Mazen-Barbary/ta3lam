@@ -1,0 +1,837 @@
+<!DOCTYPE html><html dir="rtl" lang="ar" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_standard" name="shell-type">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&amp;family=Katibeh&amp;family=Reem+Kufi:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #E1FFBB;
+        color: #001A6E;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .font-craft {
+      font-family: 'Aref Ruqaa', 'Katibeh', serif;
+    }
+    .font-arabic {
+      font-family: 'Reem Kufi', 'Aref Ruqaa', sans-serif;
+    }
+    ::placeholder {
+      color: #009990 !important;
+      opacity: 0.9;
+    }
+
+    /* 3D Carousel & Orbit Styles */
+    .carousel-perspective {
+      perspective: 1400px;
+      perspective-origin: 50% 45%;
+    }
+    .carousel-stage {
+      transform-style: preserve-3d;
+      animation: orbitRotate 34s linear infinite, orbitFloat 6s ease-in-out infinite alternate;
+    }
+    .carousel-stage:hover,
+    .carousel-stage.is-paused {
+      animation-play-state: paused;
+    }
+
+    @keyframes orbitRotate {
+      from {
+        transform: rotateY(0deg);
+      }
+      to {
+        transform: rotateY(-360deg);
+      }
+    }
+
+    @keyframes orbitFloat {
+      0% {
+        transform: translateY(0px) rotateX(2deg);
+      }
+      50% {
+        transform: translateY(-16px) rotateX(-2deg);
+      }
+      100% {
+        transform: translateY(12px) rotateX(1deg);
+      }
+    }
+
+    /* Track Cards positioning around cylinder */
+    /* 6 cards => 360 / 6 = 60deg each. Radius ~ 390px (on mobile ~ 280px) */
+    .card-cylinder-0 {
+      transform: rotateY(0deg) translateZ(400px);
+    }
+    .card-cylinder-1 {
+      transform: rotateY(60deg) translateZ(400px);
+    }
+    .card-cylinder-2 {
+      transform: rotateY(120deg) translateZ(400px);
+    }
+    .card-cylinder-3 {
+      transform: rotateY(180deg) translateZ(400px);
+    }
+    .card-cylinder-4 {
+      transform: rotateY(240deg) translateZ(400px);
+    }
+    .card-cylinder-5 {
+      transform: rotateY(300deg) translateZ(400px);
+    }
+
+    @media (max-width: 768px) {
+      .card-cylinder-0 { transform: rotateY(0deg) translateZ(270px); }
+      .card-cylinder-1 { transform: rotateY(60deg) translateZ(270px); }
+      .card-cylinder-2 { transform: rotateY(120deg) translateZ(270px); }
+      .card-cylinder-3 { transform: rotateY(180deg) translateZ(270px); }
+      .card-cylinder-4 { transform: rotateY(240deg) translateZ(270px); }
+      .card-cylinder-5 { transform: rotateY(300deg) translateZ(270px); }
+    }
+  </style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            c1: "#E1FFBB", // Pale lime / light pastel green
+            c2: "#009990", // Teal / turquoise green
+            c3: "#074799", // Royal blue
+            c4: "#001A6E", // Deep dark navy
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-c1 text-c4 font-arabic antialiased selection:bg-c2 selection:text-c1">
+<!-- Header / Navigation Chrome (Deep Navy with high contrast Lime & Teal) -->
+<header class="fixed top-0 w-full z-50 bg-c4 border-b-2 border-c2 backdrop-blur-md">
+<div class="w-full px-6 lg:px-12 flex items-center justify-between py-2">
+<div class="flex items-center gap-8">
+<!-- Logo from DataStore https://lh3.googleusercontent.com/aida-public/AB6AXuCC6phQ32DtyR7xu5Qrq5f8sX8IvzCYoNQZvJd4OmVrfXd-0BFzKL7fkjyR3vJemW8Kv3G-j84hRHJLkYostkd3fnfOJL_3NsJyzpopcwW4z8mZ7h9WPpAzsboC3WoLFoMYRN9IZm4hoilvOYDFhz1Z2iLtxpxrOAqKk_xBwXZiZra81-TU7j5Z93PxY05RklY6tQAP3kmzKlSwlXiyzmErFLSRJyQ2jgXS1jgZ4zlB9iLn5RVbJOLZePWlLx0qP8pEXQ -->
+<a class="flex items-center gap-0 bg-c1 px-0 rounded-xl border border-c2 py-0" href="#">
+<img alt="منصة تعلم" class="w-auto object-contain h-14" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfbaX1bqbTy7zUY9yJ6W0uOxmq-pVZ-k-_TSBiVIRCm2xwbCLaKJm80-MZHnrrtp82tGseEQpIoiXR8zZlbBWKSbB3tFXWXqRj1gxu-ju1FOvRTHqcbpgTFPpWcFWUUn7Y-fTzrdAmro6D-mWw0k3PhpauWATTWtd4Qjjh_hxgZTbr_Jlzs55Pc9tHN_FhHbcTGgaaGy978k080fsXPd3PQa0Mns1VqSCwafJ_UpFZH9Bv_nA89tbOHync9O-r73udlJ-8UMqzo_63rQ">
+
+</a>
+<!-- Pure Typographic Nav Links -->
+<nav class="hidden lg:flex items-center gap-2">
+<a class="px-4 py-2 rounded-lg bg-c2 text-c1 font-bold text-base" href="#">الرئيسية</a>
+<a class="px-4 py-2 rounded-lg text-c1 hover:bg-c3 hover:text-c1 font-bold text-base transition-colors" href="#tracks">المسارات التعليمية</a>
+<a class="px-4 py-2 rounded-lg text-c1 hover:bg-c3 hover:text-c1 font-bold text-base transition-colors" href="#programs">الدورات المميزة</a>
+<a class="px-4 py-2 rounded-lg text-c1 hover:bg-c3 hover:text-c1 font-bold text-base transition-colors" href="#methodology">المنهجية</a>
+<a class="px-4 py-2 rounded-lg text-c1 hover:bg-c3 hover:text-c1 font-bold text-base transition-colors" href="#testimonials">آراء الخريجين</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<a class="px-7 py-2.5 rounded-xl bg-c1 text-c4 font-craft font-bold text-lg hover:bg-c2 hover:text-c1 transition-colors border-2 border-c1" href="#cta">
+          انضم إلينا
+        </a>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="w-full pt-20 bg-c1 min-h-screen">
+<!-- Hero Section (Light Pale Lime Background #E1FFBB with Teal and Navy Contrasts, Asymmetrical Side Layout) -->
+<section class="relative overflow-hidden py-16 lg:py-24 px-6 lg:px-12 border-b-4 border-c2" style="background: linear-gradient(to right, #C8F29A, #E1FFBB, #D3F9B0);">
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Right Column: Text & Content (Aligned to the right side, Asymmetrical) -->
+<div class="lg:col-span-8 text-right flex flex-col items-start">
+<!-- Announcement Tag -->
+<div class="inline-flex items-center px-4 py-2 rounded-full bg-c4 text-c1 border-2 border-c2 text-sm font-bold mb-6">
+<span class="text-c2 ml-2 font-black">◆</span>
+<span class="">انطلاق المسارات الأكاديمية التخصصية لعام 2026</span>
+</div>
+<!-- Asymmetric Hero Heading in Arabic Handicraft Font -->
+<h1 class="font-craft text-4xl sm:text-5xl lg:text-6xl font-bold text-c4 leading-tight tracking-normal mb-6 text-right">
+            رحلتك نحو المعرفة تبدأ هنا —
+            <span class="block text-c2 underline decoration-c3 decoration-4 underline-offset-8 mt-2">
+              تعلَّم باقتدار وبلا حدود
+            </span>
+</h1>
+<p class="text-base sm:text-lg lg:text-xl text-c4 font-semibold max-w-2xl leading-relaxed mb-8 text-right font-arabic">
+            بيئة رقمية رصينة تستلهم أصالة الخط والفكر العربي وتقدم أحدث مناهج البرمجيات، والذكاء الاصطناعي، وهندسة النظم بأيدي نخبة من الخبراء والأكاديميين المعتمدين.
+          </p>
+<!-- Primary CTA Buttons -->
+<div class="flex flex-wrap items-center gap-4 mb-10 w-full sm:w-auto justify-start">
+<a class="px-8 py-4 rounded-xl bg-c4 text-c1 font-craft font-bold text-xl hover:bg-c2 transition-all duration-200 border-2 border-c4 shadow-lg" href="#tracks">
+              ابدأ التعلم الآن
+            </a>
+<a class="px-8 py-4 rounded-xl bg-c1 text-c4 font-craft font-bold text-xl hover:bg-c2 hover:text-c1 transition-all duration-200 border-2 border-c4" href="#programs">
+              استكشف المسارات التخصصية
+            </a>
+</div>
+<!-- Pure Search Box & Typographic Chips (Right Aligned) -->
+
+</div>
+<!-- Left Column: Asymmetrical Statistical Monolith Panel -->
+<div class="lg:col-span-4 flex flex-col gap-4">
+
+<div class="grid grid-cols-2 gap-4">
+
+
+</div>
+
+</div>
+</div>
+</section>
+<!-- Learning Domains / Tracks Section (Navy Background #001A6E with 3D Circular Orbit Carousel) -->
+<section class="py-20 px-6 lg:px-12 bg-c4 text-c1 border-b-4 border-c2 overflow-hidden relative" id="tracks">
+<div class="max-w-7xl mx-auto w-full">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 text-right">
+<div>
+<span class="inline-block px-3 py-1 rounded bg-c2 text-c1 font-bold text-xs mb-3">
+            مجالات التخصص المعرفي
+          </span>
+<h2 class="font-craft text-3xl lg:text-4xl font-bold text-c1">
+            استكشف المسارات التعليمية الشاملة
+          </h2>
+</div>
+<div class="flex flex-col items-start md:items-end gap-2">
+<p class="text-base text-c1/90 max-w-md font-arabic text-right">
+            برامج متكاملة تبدأ من المفاهيم التأسيسية وتصل بك إلى مستوى الكفاءة والاحتراف البرمجي والمهني.
+          </p>
+<span class="px-3 py-1 rounded-full bg-c3 text-c1 text-xs font-bold border border-c2">
+            مدار تفاعلي ثلاثي الأبعاد • مرر الفأرة للتوقف المؤقت
+          </span>
+</div>
+</div>
+<!-- 3D Carousel Stage Wrapper -->
+<div class="carousel-perspective w-full py-16 flex items-center justify-center relative min-h-[540px]">
+<!-- Rotating Carousel Stage -->
+<div class="carousel-stage relative w-[280px] sm:w-[320px] md:w-[350px] h-[400px]" id="carouselStage" style="animation: auto ease 0s 1 normal none running none; transform: rotateY(-480deg); transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);">
+<!-- Track 1 (0 deg) -->
+<div class="card-cylinder-0 absolute inset-0 p-7 rounded-2xl bg-c3 border-2 border-c2 hover:border-c1 transition-all flex flex-col justify-between text-right shadow-2xl backdrop-blur-md">
+<div>
+<div class="inline-block px-3 py-1 rounded-md bg-c4 text-c1 text-xs font-bold mb-4 border border-c2">
+              المسار البرمجي
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-3">هندسة البرمجيات والأنظمة</h3>
+<p class="text-sm text-c1/90 leading-relaxed mb-6 font-arabic">
+              تعلم أطر العمل الحديثة، الخوارزميات، بنية النظم السحابية، وقواعد البيانات الموزعة عبر مشاريع عملية.
+            </p>
+</div>
+<div class="pt-4 border-t border-c4 flex items-center justify-between">
+<span class="text-xs font-bold text-c1">42 مسار • 180 مشروع</span>
+<span class="px-3 py-1 rounded bg-c2 text-c1 font-craft font-bold text-sm">عرض المسار</span>
+</div>
+</div>
+<!-- Track 2 (60 deg) -->
+<div class="card-cylinder-1 absolute inset-0 p-7 rounded-2xl bg-c3 border-2 border-c2 hover:border-c1 transition-all flex flex-col justify-between text-right shadow-2xl backdrop-blur-md">
+<div>
+<div class="inline-block px-3 py-1 rounded-md bg-c4 text-c1 text-xs font-bold mb-4 border border-c1">
+              المسار الذكي
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-3">الذكاء الاصطناعي وعلوم البيانات</h3>
+<p class="text-sm text-c1/90 leading-relaxed mb-6 font-arabic">
+              نماذج التعلم العميق، معالجة اللغات الطبيعية العربية، تحليل البيانات الضخمة، والتعلم الآلي المتقدم.
+            </p>
+</div>
+<div class="pt-4 border-t border-c4 flex items-center justify-between">
+<span class="text-xs font-bold text-c1">36 مسار • 95 نموذج</span>
+<span class="px-3 py-1 rounded bg-c1 text-c4 font-craft font-bold text-sm">عرض المسار</span>
+</div>
+</div>
+<!-- Track 3 (120 deg) -->
+<div class="card-cylinder-2 absolute inset-0 p-7 rounded-2xl bg-c3 border-2 border-c2 hover:border-c1 transition-all flex flex-col justify-between text-right shadow-2xl backdrop-blur-md">
+<div>
+<div class="inline-block px-3 py-1 rounded-md bg-c4 text-c1 text-xs font-bold mb-4 border border-c2">
+              المسار الإبداعي
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-3">تصميم واجهات وتجربة المستخدم</h3>
+<p class="text-sm text-c1/90 leading-relaxed mb-6 font-arabic">
+              منظومات التصميم الرقمي، سيكولوجية المستخدم، تصميم التفاعل، واختبارات الجاهزية والوصول الشامل.
+            </p>
+</div>
+<div class="pt-4 border-t border-c4 flex items-center justify-between">
+<span class="text-xs font-bold text-c1">28 مسار • 140 تطبيق</span>
+<span class="px-3 py-1 rounded bg-c2 text-c1 font-craft font-bold text-sm">عرض المسار</span>
+</div>
+</div>
+<!-- Track 4 (180 deg) -->
+<div class="card-cylinder-3 absolute inset-0 p-7 rounded-2xl bg-c3 border-2 border-c2 hover:border-c1 transition-all flex flex-col justify-between text-right shadow-2xl backdrop-blur-md">
+<div>
+<div class="inline-block px-3 py-1 rounded-md bg-c4 text-c1 text-xs font-bold mb-4 border border-c1">
+              المسار الأمني
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-3">الأمن السيبراني والدفاع الرقمي</h3>
+<p class="text-sm text-c1/90 leading-relaxed mb-6 font-arabic">
+              تحليل الثغرات، التشفير وحماية البيانات، أمن الشبكات، واختبار الاختراق الأخلاقي المؤسسي.
+            </p>
+</div>
+<div class="pt-4 border-t border-c4 flex items-center justify-between">
+<span class="text-xs font-bold text-c1">22 مسار • 70 محاكاة</span>
+<span class="px-3 py-1 rounded bg-c1 text-c4 font-craft font-bold text-sm">عرض المسار</span>
+</div>
+</div>
+<!-- Track 5 (240 deg) -->
+<div class="card-cylinder-4 absolute inset-0 p-7 rounded-2xl bg-c3 border-2 border-c2 hover:border-c1 transition-all flex flex-col justify-between text-right shadow-2xl backdrop-blur-md">
+<div>
+<div class="inline-block px-3 py-1 rounded-md bg-c4 text-c1 text-xs font-bold mb-4 border border-c2">
+              المسار القيادي
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-3">إدارة المنتجات الرقمية والابتكار</h3>
+<p class="text-sm text-c1/90 leading-relaxed mb-6 font-arabic">
+              منهجيات أجايل الرشيقة، أبحاث السوق، استراتيجيات إطلاق المنتجات، ومؤشرات الأداء التشغيلية.
+            </p>
+</div>
+<div class="pt-4 border-t border-c4 flex items-center justify-between">
+<span class="text-xs font-bold text-c1">19 مسار • 50 دراسة</span>
+<span class="px-3 py-1 rounded bg-c2 text-c1 font-craft font-bold text-sm">عرض المسار</span>
+</div>
+</div>
+<!-- Track 6 (300 deg) -->
+<div class="card-cylinder-5 absolute inset-0 p-7 rounded-2xl bg-c3 border-2 border-c2 hover:border-c1 transition-all flex flex-col justify-between text-right shadow-2xl backdrop-blur-md">
+<div>
+<div class="inline-block px-3 py-1 rounded-md bg-c4 text-c1 text-xs font-bold mb-4 border border-c1">
+              المسار البنيوي
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-3">الحوسبة السحابية وعمليات التطوير</h3>
+<p class="text-sm text-c1/90 leading-relaxed mb-6 font-arabic">
+              إدارة الحاويات ونشر البنى السحابية، أتمتة خطوط الإمداد البرمجي، ومراقبة الموثوقية الشاملة.
+            </p>
+</div>
+<div class="pt-4 border-t border-c4 flex items-center justify-between">
+<span class="text-xs font-bold text-c1">25 مسار • 85 معمل</span>
+<span class="px-3 py-1 rounded bg-c1 text-c4 font-craft font-bold text-sm">عرض المسار</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Carousel Navigation Controls & Step Indicators (Strictly 4 Palette Colors, No icons) -->
+<div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-6">
+<div class="flex items-center gap-3">
+<button class="px-5 py-2.5 rounded-xl bg-c2 text-c1 font-craft font-bold text-base hover:bg-c1 hover:text-c4 transition-colors border border-c2" id="prevTrackBtn" onclick="rotateTracks(60)" type="button">
+          المسار السابق
+        </button>
+<button class="px-6 py-2.5 rounded-xl bg-c1 text-c4 font-craft font-bold text-base hover:bg-c2 hover:text-c1 transition-colors border-2 border-c1" id="toggleTrackPlay" onclick="toggleOrbitPlay()" type="button">تشغيل الدوران</button>
+<button class="px-5 py-2.5 rounded-xl bg-c2 text-c1 font-craft font-bold text-base hover:bg-c1 hover:text-c4 transition-colors border border-c2" id="nextTrackBtn" onclick="rotateTracks(-60)" type="button">
+          المسار التالي
+        </button>
+</div>
+<!-- Step Indicators (1 to 6) -->
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 rounded-lg bg-c2 text-c1 font-craft font-bold text-sm border border-c1 hover:bg-c1 hover:text-c4 transition-colors" onclick="setTrackAngle(0)" title="المسار الأول" type="button">١</button>
+<button class="w-8 h-8 rounded-lg bg-c3 text-c1 font-craft font-bold text-sm border border-c2 hover:bg-c1 hover:text-c4 transition-colors" onclick="setTrackAngle(-60)" title="المسار الثاني" type="button">٢</button>
+<button class="w-8 h-8 rounded-lg bg-c3 text-c1 font-craft font-bold text-sm border border-c2 hover:bg-c1 hover:text-c4 transition-colors" onclick="setTrackAngle(-120)" title="المسار الثالث" type="button">٣</button>
+<button class="w-8 h-8 rounded-lg bg-c3 text-c1 font-craft font-bold text-sm border border-c2 hover:bg-c1 hover:text-c4 transition-colors" onclick="setTrackAngle(-180)" title="المسار الرابع" type="button">٤</button>
+<button class="w-8 h-8 rounded-lg bg-c3 text-c1 font-craft font-bold text-sm border border-c2 hover:bg-c1 hover:text-c4 transition-colors" onclick="setTrackAngle(-240)" title="المسار الخامس" type="button">٥</button>
+<button class="w-8 h-8 rounded-lg bg-c3 text-c1 font-craft font-bold text-sm border border-c2 hover:bg-c1 hover:text-c4 transition-colors" onclick="setTrackAngle(-300)" title="المسار السادس" type="button">٦</button>
+</div>
+</div>
+</div>
+</section>
+<script>
+  let currentAngle = 0;
+  let isOrbitPaused = false;
+  const stage = document.getElementById('carouselStage');
+  const toggleBtn = document.getElementById('toggleTrackPlay');
+
+  function rotateTracks(step) {
+    if (!stage) return;
+    stage.style.animation = 'none';
+    stage.offsetHeight; // trigger reflow
+    currentAngle += step;
+    stage.style.transform = `rotateY(${currentAngle}deg)`;
+    stage.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    if (toggleBtn) toggleBtn.textContent = 'تشغيل الدوران';
+    isOrbitPaused = true;
+  }
+
+  function setTrackAngle(angle) {
+    if (!stage) return;
+    stage.style.animation = 'none';
+    stage.offsetHeight; // trigger reflow
+    currentAngle = angle;
+    stage.style.transform = `rotateY(${currentAngle}deg)`;
+    stage.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+    if (toggleBtn) toggleBtn.textContent = 'تشغيل الدوران';
+    isOrbitPaused = true;
+  }
+
+  function toggleOrbitPlay() {
+    if (!stage || !toggleBtn) return;
+    if (isOrbitPaused) {
+      stage.style.transition = 'none';
+      stage.style.transform = '';
+      stage.style.animation = 'orbitRotate 34s linear infinite, orbitFloat 6s ease-in-out infinite alternate';
+      toggleBtn.textContent = 'إيقاف الدوران';
+      isOrbitPaused = false;
+    } else {
+      stage.classList.toggle('is-paused');
+      const isPausedNow = stage.classList.contains('is-paused');
+      toggleBtn.textContent = isPausedNow ? 'تشغيل الدوران' : 'إيقاف الدوران';
+    }
+  }
+</script>
+<!-- Featured Programs Section (Teal Background #009990 with High Contrast Lime & Navy Cards) -->
+<section class="py-20 px-6 lg:px-12 bg-c2 text-c1 border-b-4 border-c4" id="programs">
+<div class="max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4 text-right">
+<div>
+<span class="inline-block px-4 py-1.5 rounded-full bg-c4 text-c1 font-bold text-xs mb-3 border border-c1">
+              البرامج المهنية المعتمدة
+            </span>
+<h2 class="font-craft text-3xl lg:text-4xl font-bold text-c1">
+              دبلومات تخصصية موجهة نحو التوظيف
+            </h2>
+</div>
+<a class="text-c1 hover:text-c4 font-craft font-bold text-lg border-b-2 border-c1 pb-1 self-start md:self-auto transition-colors" href="#">
+            تصفح كافة البرامج الأكاديمية (140)
+          </a>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Program Card 1 (Lime Background) -->
+<div class="bg-c1 text-c4 border-4 border-c4 rounded-2xl p-7 flex flex-col justify-between text-right shadow-xl">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="px-3 py-1 rounded-lg bg-c4 text-c1 font-bold text-xs">مستوى متقدم</span>
+<span class="text-c4 font-black text-xs">تقييم 4.90 [1,420 طالب]</span>
+</div>
+<div class="py-6 px-4 rounded-xl bg-c2 text-c1 border-2 border-c4 text-center mb-6">
+<span class="font-craft text-2xl font-bold text-c1 block">هندسة نماذج الذكاء الاصطناعي</span>
+<span class="text-xs text-c1 block mt-1 tracking-wider uppercase font-bold">Large Language Models Track</span>
+</div>
+<h3 class="font-craft text-2xl font-bold text-c4 mb-3">
+                تطوير التطبيقات المعتمدة على النماذج اللغوية
+              </h3>
+<p class="text-sm text-c4 font-semibold leading-relaxed mb-6 font-arabic">
+                بناء تطبيقات الذكاء الاصطناعي التوليدي عبر ربط الأطر البرمجية المتقدمة بأنظمة قواعد البيانات المؤسسية.
+              </p>
+<div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-xl bg-c1 border-2 border-c4 text-xs font-bold text-c4">
+<div class="">المدة: 12 أسبوع</div>
+<div class="">المشرف: د. ريان الشهري</div>
+<div class="">التطبيق: 8 مشاريع متكاملة</div>
+<div class="">الشهادة: اعتماد مهني موثق</div>
+</div>
+</div>
+<div>
+<div class="mb-4">
+<div class="flex justify-between text-xs font-bold text-c4 mb-2">
+<span class="">نسبة التوظيف بعد التخرج</span>
+<span class="text-c4 font-black">94%</span>
+</div>
+<div class="w-full h-3 rounded-full bg-c4/20 overflow-hidden border border-c4">
+<div class="h-full bg-c4 rounded-full" style="width: 94%"></div>
+</div>
+</div>
+<button class="w-full py-3.5 rounded-xl bg-c4 text-c1 font-craft font-bold text-lg hover:bg-c3 transition-colors border-2 border-c4" type="button">
+                عرض تفاصيل البرنامج والتسجيل
+              </button>
+</div>
+</div>
+<!-- Program Card 2 (Deep Navy Background) -->
+<div class="bg-c4 text-c1 border-4 border-c1 rounded-2xl p-7 flex flex-col justify-between text-right shadow-xl">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="px-3 py-1 rounded-lg bg-c1 text-c4 font-bold text-xs">مستوى متوسط</span>
+<span class="text-c1 font-bold text-xs">تقييم 4.95 [2,810 طالب]</span>
+</div>
+<div class="py-6 px-4 rounded-xl bg-c3 text-c1 border-2 border-c1 text-center mb-6">
+<span class="font-craft text-2xl font-bold text-c1 block">بنية وهندسة الويب الشاملة</span>
+<span class="text-xs text-c1 block mt-1 tracking-wider uppercase font-bold">Full-Stack Engineering</span>
+</div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-3">
+                المطور الشامل للويب الحديث
+              </h3>
+<p class="text-sm text-c1/90 leading-relaxed mb-6 font-arabic">
+                إتقان بيئات العمل الحديثة وهندسة قواعد البيانات السحابية مع تطبيق أفضل ممارسات النشر والتشغيل الموثوق.
+              </p>
+<div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-xl bg-c3 text-xs font-bold text-c1 border border-c2">
+<div class="">المدة: 16 أسبوع</div>
+<div class="">المشرف: م. طارق المنصور</div>
+<div class="">التطبيق: 14 مشروع عملي</div>
+<div class="">الشهادة: اعتماد مهني موثق</div>
+</div>
+</div>
+<div>
+<div class="mb-4">
+<div class="flex justify-between text-xs font-bold text-c1 mb-2">
+<span class="">نسبة التوظيف بعد التخرج</span>
+<span class="text-c1 font-black">96%</span>
+</div>
+<div class="w-full h-3 rounded-full bg-c3 overflow-hidden border border-c1">
+<div class="h-full bg-c1 rounded-full" style="width: 96%"></div>
+</div>
+</div>
+<button class="w-full py-3.5 rounded-xl bg-c1 text-c4 font-craft font-bold text-lg hover:bg-c2 hover:text-c1 transition-colors border-2 border-c1" type="button">
+                عرض تفاصيل البرنامج والتسجيل
+              </button>
+</div>
+</div>
+<!-- Program Card 3 (Lime Background) -->
+<div class="bg-c1 text-c4 border-4 border-c4 rounded-2xl p-7 flex flex-col justify-between text-right shadow-xl">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="px-3 py-1 rounded-lg bg-c4 text-c1 font-bold text-xs">تأسيسي إلى متقدم</span>
+<span class="text-c4 font-black text-xs">تقييم 4.88 [980 طالب]</span>
+</div>
+<div class="py-6 px-4 rounded-xl bg-c2 text-c1 border-2 border-c4 text-center mb-6">
+<span class="font-craft text-2xl font-bold text-c1 block">تصميم الأنظمة الرقمية</span>
+<span class="text-xs text-c1 block mt-1 tracking-wider uppercase font-bold">Product &amp; Design Systems</span>
+</div>
+<h3 class="font-craft text-2xl font-bold text-c4 mb-3">
+                احتراف تصميم المنتجات الرقمية والتفاعل
+              </h3>
+<p class="text-sm text-c4 font-semibold leading-relaxed mb-6 font-arabic">
+                تأسيس منظومات تصميم موحدة واحتراف أدوات التحليل السلوكي وتجربة المستخدم للمنصات العربية.
+              </p>
+<div class="grid grid-cols-2 gap-3 mb-6 p-4 rounded-xl bg-c1 border-2 border-c4 text-xs font-bold text-c4">
+<div class="">المدة: 10 أسابيع</div>
+<div class="">المشرفة: أ. سارة القحطاني</div>
+<div class="">التطبيق: 6 دراسات حالة</div>
+<div class="">الشهادة: اعتماد مهني موثق</div>
+</div>
+</div>
+<div>
+<div class="mb-4">
+<div class="flex justify-between text-xs font-bold text-c4 mb-2">
+<span class="">نسبة التوظيف بعد التخرج</span>
+<span class="text-c4 font-black">91%</span>
+</div>
+<div class="w-full h-3 rounded-full bg-c4/20 overflow-hidden border border-c4">
+<div class="h-full bg-c4 rounded-full" style="width: 91%"></div>
+</div>
+</div>
+<button class="w-full py-3.5 rounded-xl bg-c4 text-c1 font-craft font-bold text-lg hover:bg-c3 transition-colors border-2 border-c4" type="button">
+                عرض تفاصيل البرنامج والتسجيل
+              </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Value Propositions (Pale Lime Background #E1FFBB with Deep Navy Accents) -->
+<section class="py-24 px-6 lg:px-12 max-w-7xl mx-auto w-full bg-c1 text-c4">
+<div class="text-right max-w-3xl mb-16">
+<span class="inline-block px-3 py-1 rounded bg-c4 text-c1 font-bold text-xs mb-3">
+          التميز الأكاديمي والعملي
+        </span>
+<h2 class="font-craft text-3xl lg:text-4xl font-bold text-c4 mb-4">
+          لماذا يختار المحترفون منصة "تعلَّم"؟
+        </h2>
+<p class="text-base text-c4 font-semibold font-arabic">
+          صممنا منصة تجمع بين عمق المعرفة ونقاء التجربة التقنية، بعيداً عن النمطية والتكرار.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Feature 1 -->
+<div class="p-8 rounded-2xl bg-c4 text-c1 border-2 border-c2 text-right flex flex-col justify-between shadow-lg">
+<div>
+<div class="w-12 h-12 rounded-xl bg-c2 text-c1 border-2 border-c1 font-craft text-2xl font-bold flex items-center justify-center mb-6">
+              أ
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-2">شهادات معتمدة وموثقة</h3>
+<p class="text-sm text-c1/90 leading-relaxed font-arabic">
+              شهادات رقمية موثقة برمز فريد، مقبولة ومعترف بها لدى كبرى المؤسسات والشركات التقنية الإقليمية.
+            </p>
+</div>
+</div>
+<!-- Feature 2 -->
+<div class="p-8 rounded-2xl bg-c3 text-c1 border-2 border-c1 text-right flex flex-col justify-between shadow-lg">
+<div>
+<div class="w-12 h-12 rounded-xl bg-c1 text-c4 border-2 border-c4 font-craft text-2xl font-bold flex items-center justify-center mb-6">
+              ب
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-2">معامل برمجية تفاعلية</h3>
+<p class="text-sm text-c1/90 leading-relaxed font-arabic">
+              اكتب الكود واختبر الأنظمة مباشرة في متصفحك دون الحاجة لتثبيت برمجيات خارجية مع تغذية راجعة فورية.
+            </p>
+</div>
+</div>
+<!-- Feature 3 -->
+<div class="p-8 rounded-2xl bg-c4 text-c1 border-2 border-c2 text-right flex flex-col justify-between shadow-lg">
+<div>
+<div class="w-12 h-12 rounded-xl bg-c2 text-c1 border-2 border-c1 font-craft text-2xl font-bold flex items-center justify-center mb-6">
+              ج
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-2">إرشاد وتوجيه مستمر</h3>
+<p class="text-sm text-c1/90 leading-relaxed font-arabic">
+              جلسات أسبوعية مباشرة مع موجهين تقنيين لمراجعة مشاريعك والإجابة عن استفساراتك خطوة بخطوة.
+            </p>
+</div>
+</div>
+<!-- Feature 4 -->
+<div class="p-8 rounded-2xl bg-c3 text-c1 border-2 border-c1 text-right flex flex-col justify-between shadow-lg">
+<div>
+<div class="w-12 h-12 rounded-xl bg-c1 text-c4 border-2 border-c4 font-craft text-2xl font-bold flex items-center justify-center mb-6">
+              د
+            </div>
+<h3 class="font-craft text-2xl font-bold text-c1 mb-2">محفظة أعمال احترافية</h3>
+<p class="text-sm text-c1/90 leading-relaxed font-arabic">
+              تتخرج وبحوزتك مشاريع تطبيقية واقعية تثبت كفاءتك لأصحاب العمل وتمنحك أسبقية تنافسية في المقابلات.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Methodology / 4-Step Roadmap (Royal Blue Background #074799 for alternating balance) -->
+<section class="py-24 px-6 lg:px-12 bg-c3 text-c1 border-y-4 border-c2" id="methodology">
+<div class="max-w-7xl mx-auto">
+<div class="text-right max-w-3xl mb-16">
+<span class="inline-block px-3 py-1 rounded bg-c1 text-c4 font-bold text-xs mb-3">
+            منهجية التعليم الرصين
+          </span>
+<h2 class="font-craft text-3xl lg:text-4xl font-bold text-c1 mb-4">
+            خارطة طريق التعلم: من البداية إلى التمكن
+          </h2>
+<p class="text-base text-c1/90 font-arabic">
+            تسلسل علمي مدروس يضمن استيعاب المفاهيم النظرية وتطبيقها بثقة في بيئات الإنتاج الحقيقية.
+          </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-right">
+<!-- Step 1 -->
+<div class="p-8 rounded-2xl bg-c4 border-2 border-c1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="w-10 h-10 rounded-full bg-c1 text-c4 font-craft text-2xl font-bold flex items-center justify-center">١</span>
+<span class="text-xs font-bold text-c1 uppercase tracking-wider">المرحلة الأولى</span>
+</div>
+<h3 class="font-craft text-xl font-bold text-c1 mb-2">تقييم الكفاءة والمسار</h3>
+<p class="text-sm text-c1/80 leading-relaxed font-arabic">
+                اختبار تحديد مستوى يرشدك إلى النقطة المثالية لبدء مسارك دون إهدار وقتك في الأساسيات المتقنة مسبقاً.
+              </p>
+</div>
+<div class="mt-6 pt-4 border-t border-c3 text-xs font-bold text-c1">
+              تخصيص الخطة الدراسية الفردية
+            </div>
+</div>
+<!-- Step 2 -->
+<div class="p-8 rounded-2xl bg-c4 border-2 border-c2 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="w-10 h-10 rounded-full bg-c2 text-c1 font-craft text-2xl font-bold flex items-center justify-center">٢</span>
+<span class="text-xs font-bold text-c2 uppercase tracking-wider">المرحلة الثانية</span>
+</div>
+<h3 class="font-craft text-xl font-bold text-c1 mb-2">المعرفة التفاعلية المركزة</h3>
+<p class="text-sm text-c1/80 leading-relaxed font-arabic">
+                دروس موجزة خالية من الحشو مدعومة بتمارين عملية فورية في المتصفح واختبارات لقياس المفاهيم بدقة.
+              </p>
+</div>
+<div class="mt-6 pt-4 border-t border-c3 text-xs font-bold text-c2">
+              تطبيق برمجي فوري ومباشر
+            </div>
+</div>
+<!-- Step 3 -->
+<div class="p-8 rounded-2xl bg-c4 border-2 border-c1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="w-10 h-10 rounded-full bg-c1 text-c4 font-craft text-2xl font-bold flex items-center justify-center">٣</span>
+<span class="text-xs font-bold text-c1 uppercase tracking-wider">المرحلة الثالثة</span>
+</div>
+<h3 class="font-craft text-xl font-bold text-c1 mb-2">مشاريع التخرج الواقعية</h3>
+<p class="text-sm text-c1/80 leading-relaxed font-arabic">
+                تنفيذ مشاريع محاكية لبيئة العمل الإنتاجية، مع مراجعة دقيقة للكود وإرشادات تحسين فردية من الخبراء.
+              </p>
+</div>
+<div class="mt-6 pt-4 border-t border-c3 text-xs font-bold text-c1">
+              مراجعة الكود البرمجي مع مهندس مختص
+            </div>
+</div>
+<!-- Step 4 -->
+<div class="p-8 rounded-2xl bg-c4 border-2 border-c2 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-6">
+<span class="w-10 h-10 rounded-full bg-c2 text-c1 font-craft text-2xl font-bold flex items-center justify-center">٤</span>
+<span class="text-xs font-bold text-c2 uppercase tracking-wider">المرحلة الرابعة</span>
+</div>
+<h3 class="font-craft text-xl font-bold text-c1 mb-2">الاعتماد والربط الوظيفي</h3>
+<p class="text-sm text-c1/80 leading-relaxed font-arabic">
+                نيل الشهادة المعتمدة وإدراج ملفك في شبكة توظيف المنصة لتقديمك لشركائنا من كبرى المنشآت التقنية.
+              </p>
+</div>
+<div class="mt-6 pt-4 border-t border-c3 text-xs font-bold text-c2">
+              انطلاق المسار المهني المعتمد
+            </div>
+</div>
+</div>
+</div>
+</section>
+<!-- Testimonials (Pale Lime Background #E1FFBB with Deep Colored Badges) -->
+<section class="py-24 px-6 lg:px-12 max-w-7xl mx-auto w-full bg-c1 text-c4" id="testimonials">
+<div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4 text-right">
+<div>
+<span class="inline-block px-3 py-1 rounded bg-c4 text-c1 font-bold text-xs mb-3">
+            شهادات من واقع التجربة
+          </span>
+<h2 class="font-craft text-3xl lg:text-4xl font-bold text-c4">
+            ماذا يقول خريجو منصة "تعلَّم"؟
+          </h2>
+</div>
+<p class="text-base text-c4 font-semibold max-w-md font-arabic">
+          قصص نجاح واقعية لمتعلمين استطاعوا تغيير مساراتهم المهنية والانضمام لأقوى الفرق الهندسية.
+        </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Testimonial 1 -->
+<div class="p-8 rounded-2xl bg-c4 text-c1 border-2 border-c2 text-right flex flex-col justify-between shadow-xl">
+<div>
+<div class="text-xs font-bold text-c2 mb-4 tracking-widest">
+              [ تقييم كامل 5.0 / 5.0 ]
+            </div>
+<p class="text-base text-c1 leading-relaxed mb-8 font-arabic">
+              «منهجية المسارات في منصة تعلم نقلتني من التشتت إلى وضوح تام. المشاريع العملية والتوجيه المباشر في كود بايثون كانا العامل الحاسم في قبولي كمهندس ذكاء اصطناعي.»
+            </p>
+</div>
+<div class="flex items-center gap-4 pt-4 border-t border-c3">
+<div class="w-12 h-12 rounded-xl bg-c2 text-c1 font-craft text-xl font-bold flex items-center justify-center">
+              م.ع
+            </div>
+<div>
+<h4 class="font-craft text-xl font-bold text-c1">مهند العتيبي</h4>
+<span class="text-xs text-c2 block">مهندس ذكاء اصطناعي • الرياض</span>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="p-8 rounded-2xl bg-c2 text-c1 border-2 border-c4 text-right flex flex-col justify-between shadow-xl">
+<div>
+<div class="text-xs font-bold text-c1 mb-4 tracking-widest">
+              [ تقييم كامل 5.0 / 5.0 ]
+            </div>
+<p class="text-base text-c1 leading-relaxed mb-8 font-arabic">
+              «أعظم ما يميز المنصة هو الاحترام البالغ للوقت. لا يوجد حشو نظري، كل تمرين له صلة مباشرة بمتطلبات العمل الواقعي، وخلال 4 أشهر بنيت معرض أعمال احترافي.»
+            </p>
+</div>
+<div class="flex items-center gap-4 pt-4 border-t border-c4/40">
+<div class="w-12 h-12 rounded-xl bg-c1 text-c4 font-craft text-xl font-bold flex items-center justify-center">
+              ر.س
+            </div>
+<div>
+<h4 class="font-craft text-xl font-bold text-c1">ريم السبيعي</h4>
+<span class="text-xs text-c1 block font-bold">مصممة منتجات رقمية • جدة</span>
+</div>
+</div>
+</div>
+<!-- Testimonial 3 -->
+<div class="p-8 rounded-2xl bg-c3 text-c1 border-2 border-c1 text-right flex flex-col justify-between shadow-xl">
+<div>
+<div class="text-xs font-bold text-c1 mb-4 tracking-widest">
+              [ تقييم كامل 5.0 / 5.0 ]
+            </div>
+<p class="text-base text-c1 leading-relaxed mb-8 font-arabic">
+              «المعامل السحابية وفرت علي عناء إعداد بيئات التطوير المعقدة. استطعت تشغيل أوعية الأنظمة واختبار أمن الشبكات مباشرة. فخور جداً بمنصة عربية بهذا المستوى.»
+            </p>
+</div>
+<div class="flex items-center gap-4 pt-4 border-t border-c4">
+<div class="w-12 h-12 rounded-xl bg-c2 text-c1 font-craft text-xl font-bold flex items-center justify-center">
+              ف.ن
+            </div>
+<div>
+<h4 class="font-craft text-xl font-bold text-c1">فيصل النعيمي</h4>
+<span class="text-xs text-c1 block">مهندس بنى سحابية • الدمام</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Call to Action Banner (Teal Background #009990 with High Contrast Lime Badges) -->
+<section class="py-20 px-6 lg:px-12 bg-c2 text-c1 border-t-4 border-c4 text-right" id="cta">
+<div class="max-w-5xl mx-auto flex flex-col items-end">
+<span class="inline-block px-4 py-1.5 rounded-full bg-c1 text-c4 font-craft font-bold text-base mb-6 border-2 border-c4">
+          ابدأ خطوتك الأولى اليوم
+        </span>
+<h2 class="font-craft text-3xl sm:text-4xl lg:text-5xl font-bold text-c1 mb-6 leading-tight">
+          انضم إلى أكثر من <span class="underline decoration-c1 decoration-4">50,000 متعلم</span> واكتسب مهارات تصنع مستقبلك
+        </h2>
+<p class="text-base sm:text-lg text-c1 max-w-2xl mb-10 leading-relaxed font-arabic font-semibold">
+          سجل حسابك الأكاديمي الآن وتمتع بوصول فوري للدروس التأسيسية، والاختبارات التفاعلية، ومجتمع الدعم الهندسي بدون أي تكاليف مسبقة.
+        </p>
+<div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto justify-end">
+<a class="w-full sm:w-auto px-8 py-4 rounded-xl bg-c1 text-c4 font-craft font-bold text-xl hover:bg-c4 hover:text-c1 transition-all duration-200 border-2 border-c4 text-center shadow-lg" href="#">
+            إنشاء حساب متعلم جديد
+          </a>
+<a class="w-full sm:w-auto px-8 py-4 rounded-xl bg-c4 text-c1 font-craft font-bold text-xl hover:bg-c1 hover:text-c4 transition-all duration-200 border-2 border-c1 text-center" href="#tracks">
+            تصفح كتالوج المسارات
+          </a>
+</div>
+<div class="flex flex-wrap items-center gap-8 mt-12 pt-8 border-t-2 border-c1/40 w-full justify-start text-sm font-bold text-c1">
+<div class="flex items-center gap-2">
+<span class="text-c1 font-black">◆</span>
+<span class="">ضمان استرداد كامل لمدة 14 يوماً</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-c1 font-black">◆</span>
+<span class="">شهادات اعتماد رقمية معترف بها إقليمياً</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-c1 font-black">◆</span>
+<span class="">وصول دائم للمناهج المحدثة والمعامل البرمجية</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Deep Navy #001A6E, High Contrast Lime and Teal) -->
+<footer class="w-full bg-c4 border-t-4 border-c2 text-right text-c1">
+<div class="w-full px-6 lg:px-12 py-16">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+<!-- Brand Summary -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 bg-c1 px-3 py-1.5 rounded-xl border border-c2 w-fit">
+<img alt="منصة تعلم" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWyv2ZEgtWhKi0A2a3GyK1ZkPaiMwj025LCYKuWECmfNjL3patDm0SCy36pHfwtNZ2d61h0ULQfYX8_GTjysI42oJw5759Ng9vGY_pVIGjrBd_g_GoX4VV3mDjuPHzO8zVQTr7wP--cw4yRw3H863wVBeVAKmVfuRS9Q_8MZyWs9ZSGKYRaoKr_L5-wtdKesJEB8rZpXRrA-Br0tCT7AvPxYbhkTvzI5N4EFYIN7eGCfyNBhLuLFdl7FkeRyk87JkZMQ">
+<span class="font-craft text-xl font-bold text-c4">صرح المعرفة</span>
+</div>
+<p class="text-sm text-c1/90 leading-relaxed font-arabic max-w-sm">
+            منظومة تعليمية رائدة تجمع بين أصالة الخط العربي وأحدث مناهج التعليم التقني والبرمجي لبناء كفاءات المستقبل.
+          </p>
+</div>
+<!-- Links 1 -->
+<div class="flex flex-col gap-3">
+<h4 class="font-craft text-xl font-bold text-c2">أروقة التعلم</h4>
+<div class="flex flex-col gap-2 text-sm font-bold text-c1">
+<a class="hover:text-c2 transition-colors" href="#tracks">المسارات التخصصية</a>
+<a class="hover:text-c2 transition-colors" href="#programs">دبلومات التوظيف</a>
+<a class="hover:text-c2 transition-colors" href="#methodology">منهجية التعليم الرصين</a>
+<a class="hover:text-c2 transition-colors" href="#testimonials">تجارب الخريجين</a>
+</div>
+</div>
+<!-- Links 2 -->
+<div class="flex flex-col gap-3">
+<h4 class="font-craft text-xl font-bold text-c2">روابط مساندة</h4>
+<div class="flex flex-col gap-2 text-sm font-bold text-c1">
+<a class="hover:text-c2 transition-colors" href="#">ميثاق الخصوصية</a>
+<a class="hover:text-c2 transition-colors" href="#">شروط الاستخدام الأكاديمي</a>
+<a class="hover:text-c2 transition-colors" href="#">مركز الدعم والتوجيه</a>
+<a class="hover:text-c2 transition-colors" href="#">بوابة التحقق من الشهادات</a>
+</div>
+</div>
+<!-- Newsletter -->
+<div class="flex flex-col gap-3">
+<h4 class="font-craft text-xl font-bold text-c2">النشرة المعرفية</h4>
+<p class="text-sm text-c1/90 font-arabic">
+            اشترك لتصلك أحدث المقالات والمحاضرات الأكاديمية والتقنية.
+          </p>
+<div class="flex items-center gap-2 mt-2">
+<input class="flex-1 px-3 py-2.5 rounded-lg bg-c1 text-c4 text-sm font-bold border-2 border-c2 focus:outline-none focus:border-c1" placeholder="بريدك الإلكتروني" type="email">
+<button class="px-5 py-2.5 rounded-lg bg-c2 text-c1 font-craft font-bold text-base hover:bg-c1 hover:text-c4 transition-colors border border-c2" type="button">
+              انضمام
+            </button>
+</div>
+</div>
+</div>
+<!-- Footer Bottom -->
+<div class="pt-8 border-t-2 border-c2 flex flex-col md:flex-row items-center justify-between gap-4 text-sm font-bold text-c1">
+<span class="">© 2026 منصة تعلَّم التعليمية. كافة الحقوق محفوظة.</span>
+<div class="flex items-center gap-4 text-c2 font-black">
+<span class="">مؤسسة تعليمية معتمدة</span>
+<span class="">◆</span>
+<span class="">الرياض، المملكة العربية السعودية</span>
+</div>
+</div>
+</div>
+</footer>
+
+
+<script src="carousel-swipe.js"></script>
+<script src="ascii-hero.js" data-src="pic1.jpg" data-size="1.3"></script>
+</body></html>
