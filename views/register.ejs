@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول وإنشاء حساب — منصة تعلَّم</title>
+
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Katibeh&family=Reem+Kufi:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/register.css">
+</head>
+
+<% const isLogin = locals.tab === 'login'; %>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-container">
+      <a class="logo-badge" href="/" title="منصة تعلَّم">
+        <img alt="منصة تعلم" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfbaX1bqbTy7zUY9yJ6W0uOxmq-pVZ-k-_TSBiVIRCm2xwbCLaKJm80-MZHnrrtp82tGseEQpIoiXR8zZlbBWKSbB3tFXWXqRj1gxu-ju1FOvRTHqcbpgTFPpWcFWUUn7Y-fTzrdAmro6D-mWw0k3PhpauWATTWtd4Qjjh_hxgZTbr_Jlzs55Pc9tHN_FhHbcTGgaaGy978k080fsXPd3PQa0Mns1VqSCwafJ_UpFZH9Bv_nA89tbOHync9O-r73udlJ-8UMqzo_63rQ">
+      </a>
+      <span class="brand-name">منصة تعلَّم</span>
+    </div>
+    <div>
+      <a class="back-link" href="/"><span>العودة للرئيسية</span><span>←</span></a>
+    </div>
+  </div>
+</header>
+
+<main class="auth-page">
+  <div class="auth-bg-circle-1"></div>
+  <div class="auth-bg-circle-2"></div>
+
+  <div class="auth-container">
+
+    <div class="auth-info-panel">
+      <div class="auth-info-header">
+        <span class="badge-tag">بوابة الوصول الأكاديمي</span>
+        <h2>مرحباً بك في <span>تعلَّم</span>، بوابتك نحو التفوق المستمر</h2>
+        <p>سجل دخولك أو أنشئ حسابك للاستفادة من المتابعة الأكاديمية الفردية، وحصص المراجعة، وبنوك الأسئلة الشاملة.</p>
+      </div>
+
+      <div class="auth-perks">
+        <div class="perk-item">
+          <span class="perk-diamond">◆</span>
+          <div class="perk-text">
+            <h4>نخبة المعلمين المتخصصين</h4>
+            <p>جدولة الحصص المباشرة واختيار المعلم الأنسب لك بضغطة زر واحدة.</p>
+          </div>
+        </div>
+        <div class="perk-item">
+          <span class="perk-diamond">◆</span>
+          <div class="perk-text">
+            <h4>بنوك أسئلة واختبارات تفاعلية</h4>
+            <p>تدريب مستمر على نماذج السنوات السابقة وأوراق الامتحانات الوطنية والدولية.</p>
+          </div>
+        </div>
+        <div class="perk-item">
+          <span class="perk-diamond">◆</span>
+          <div class="perk-text">
+            <h4>تقارير أداء ومتابعة مستمرة</h4>
+            <p>لوحة تحكم ذكية للطلاب وأولياء الأمور لقياس نسبة الإنجاز والدرجات.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="auth-info-quote">
+        <span>تعليم تفاعلي • مناهج وطنية ودولية</span>
+        <span>المملكة العربية السعودية</span>
+      </div>
+    </div>
+
+    <div class="auth-form-panel">
+
+      <div class="auth-tabs" role="tablist">
+        <button class="tab-btn <%= isLogin ? 'active' : '' %>" id="tabLoginBtn" type="button" role="tab" aria-selected="<%= isLogin %>" onclick="switchTab('login')">تسجيل الدخول</button>
+        <button class="tab-btn <%= isLogin ? '' : 'active' %>" id="tabRegisterBtn" type="button" role="tab" aria-selected="<%= !isLogin %>" onclick="switchTab('register')">إنشاء حساب جديد</button>
+      </div>
+
+      <!-- Login -->
+      <form class="auth-form <%= isLogin ? 'active' : '' %>" id="loginForm" action="/login" method="POST">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">البريد الإلكتروني</label>
+          <input class="form-input" id="loginEmail" name="email" type="email" placeholder="example@domain.com" required autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="loginPassword">كلمة المرور</label>
+          <input class="form-input" id="loginPassword" name="password" type="password" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+        <div class="form-options">
+          <span></span>
+          <a class="forgot-link" href="/forgot">نسيت كلمة المرور؟</a>
+        </div>
+        <% const loginMsg = isLogin ? (locals.error || locals.notice || '') : ''; %>
+        <div class="form-msg <%= loginMsg ? 'show' : '' %>" id="loginMsg" role="status" aria-live="polite"><%= loginMsg %></div>
+        <button class="submit-btn" type="submit">دخول إلى المنصة</button>
+        <p class="terms-note">
+          ليس لديك حساب بعد؟ <a href="#" onclick="switchTab('register'); return false;">سجل كطالب الآن</a>
+        </p>
+      </form>
+
+      <!-- Register -->
+      <form class="auth-form <%= isLogin ? '' : 'active' %>" id="registerForm" action="/register" method="POST">
+        
+
+        <!-- Student fields (disabled fieldsets are not validated or submitted) -->
+        <fieldset id="studentFields" style="display:flex;flex-direction:column;gap:20px;border:0;padding:0;margin:0;min-width:0;">
+          <div class="form-row-split">
+            <div class="form-group">
+              <label class="form-label" for="regFirstName">الاسم الأول</label>
+              <input class="form-input" id="regFirstName" name="f_name" type="text" placeholder="محمد" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="regLastName">اسم العائلة</label>
+              <input class="form-input" id="regLastName" name="l_name" type="text" placeholder="العتيبي" required>
+            </div>
+          </div>
+        </fieldset>
+
+       
+
+        <div class="form-group">
+          <label class="form-label" for="regPhone">رقم الجوال</label>
+          <input class="form-input" id="regPhone" name="phone_number" type="tel" placeholder="05xxxxxxxx" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regEmail">البريد الإلكتروني</label>
+          <input class="form-input" id="regEmail" name="email" type="email" placeholder="student@taallam.edu.sa" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regPassword">كلمة المرور</label>
+          <input class="form-input" id="regPassword" name="password" type="password" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+        </div>
+
+        <div class="form-msg <%= (!isLogin && locals.error) ? 'show' : '' %>" id="registerMsg" role="status" aria-live="polite"><%= !isLogin && locals.error ? error : '' %></div>
+        <button class="submit-btn" type="submit">إنشاء الحساب وبدء التعلم</button>
+        <p class="terms-note">
+          بالتسجيل، أنت توافق على <a href="#">شروط الخدمة</a> و <a href="#">سياسة الخصوصية</a> الخاصة بمنصة تعلَّم.
+        </p>
+      </form>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>© 2026 منصة تعلَّم التعليمية. كافة الحقوق محفوظة.</span>
+    <div class="footer-meta">
+      <span>مؤسسة تعليمية معتمدة</span>
+      <span>◆</span>
+      <span>الرياض، المملكة العربية السعودية</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+function switchTab(type) {
+  var isLogin = type === 'login';
+  var lt = document.getElementById('tabLoginBtn'), rt = document.getElementById('tabRegisterBtn');
+  lt.classList.toggle('active', isLogin);  lt.setAttribute('aria-selected', isLogin);
+  rt.classList.toggle('active', !isLogin); rt.setAttribute('aria-selected', !isLogin);
+  document.getElementById('loginForm').classList.toggle('active', isLogin);
+  document.getElementById('registerForm').classList.toggle('active', !isLogin);
+}
+function showMsg(id, text) {
+  var el = document.getElementById(id);
+  el.textContent = text;
+  el.classList.add('show');
+}
+
+
+</script>
+</body>
+</html>

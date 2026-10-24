@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة المعلمين — منصة تعلَّم</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Katibeh&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/teacher.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-start">
+      <div class="logo-badge"><span>تعلَّم</span></div>
+      <nav class="header-nav">
+        <a href="/">الرئيسية</a>
+        <a class="active" href="/admin">إدارة المعلمين</a>
+      </nav>
+    </div>
+    <div>
+      <form method="POST" action="/logout" style="margin:0">
+        <button class="header-back-btn" type="submit"><span>تسجيل الخروج</span><span>←</span></button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<main class="site-main">
+  <div class="container">
+
+    <%- include('partials/alert') %>
+
+    <div class="panel-card">
+      <div class="panel-head">
+        <div class="panel-title-group">
+          <div class="panel-icon-badge">➕</div>
+          <h2 class="panel-title">إنشاء حساب معلم جديد</h2>
+        </div>
+      </div>
+      <div class="panel-body">
+        <form method="POST" action="/admin/teachers" class="form-inline-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="input-control-group">
+            <label for="tTitle">اللقب</label>
+            <input class="input-field-custom" id="tTitle" name="title" type="text" placeholder="د. / أ.">
+          </div>
+          <div class="input-control-group">
+            <label for="tName">الاسم الكامل</label>
+            <input class="input-field-custom" id="tName" name="full_name" type="text" required>
+          </div>
+          <div class="input-control-group">
+            <label for="tSubject">المادة</label>
+            <input class="input-field-custom" id="tSubject" name="subject" type="text" required>
+          </div>
+          <div class="input-control-group">
+            <label for="tPhone">رقم الجوال</label>
+            <input class="input-field-custom" id="tPhone" name="phone_number" type="tel" required>
+          </div>
+          <div class="input-control-group">
+            <label for="tEmail">البريد الإلكتروني</label>
+            <input class="input-field-custom" id="tEmail" name="email" type="email" required autocomplete="off">
+          </div>
+          <div class="input-control-group">
+            <label for="tPass">كلمة المرور المؤقتة</label>
+            <input class="input-field-custom" id="tPass" name="password" type="text" minlength="8" required autocomplete="off">
+          </div>
+          <button class="submit-slot-btn" type="submit" style="grid-column: 1 / -1;">إنشاء حساب المعلم</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <div class="panel-head">
+        <div class="panel-title-group">
+          <div class="panel-icon-badge">👩‍🏫</div>
+          <h2 class="panel-title">المعلمون (<%= teachers.length %>)</h2>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="bookings-list">
+          <% if (!teachers.length) { %>
+            <p class="student-level">لم يتم إنشاء أي حساب معلم بعد.</p>
+          <% } %>
+          <% teachers.forEach(t => { %>
+            <div class="booking-row-card">
+              <div class="student-col">
+                <div class="student-avatar-mini"><% if (t.photo) { %><img src="/uploads/teachers/<%= t.photo %>" alt=""><% } else { %><%= t.full_name.charAt(0) %><% } %></div>
+                <div>
+                  <div class="student-name"><%= t.title || '' %> <%= t.full_name %> — <%= t.subject %></div>
+                  <div class="student-level"><%= t.email %><% if (t.phone_number) { %> • <span dir="ltr"><%= t.phone_number %></span><% } %></div>
+                </div>
+              </div>
+              <form method="POST" action="/admin/teachers/<%= t.user_id %>/delete" style="margin:0" onsubmit="return confirm('هل تريد حذف هذا المعلم نهائياً؟ سيتم إلغاء جميع حجوزاته القادمة وحذف مواعيده.');">
+                <button class="btn-cancel" type="submit">حذف المعلم</button>
+              </form>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div><span>© 2026 منصة تعلَّم التعليمية. كافة الحقوق محفوظة.</span></div>
+    <div class="footer-meta"><span>لوحة المشرف</span><span>◆</span></div>
+  </div>
+</footer>
+
+</body>
+</html>

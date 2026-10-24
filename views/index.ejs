@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>منصة تعلَّم</title>
+
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Katibeh&family=Reem+Kufi:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-start">
+      <a class="logo-link" href="/">
+        <img alt="منصة تعلم" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfbaX1bqbTy7zUY9yJ6W0uOxmq-pVZ-k-_TSBiVIRCm2xwbCLaKJm80-MZHnrrtp82tGseEQpIoiXR8zZlbBWKSbB3tFXWXqRj1gxu-ju1FOvRTHqcbpgTFPpWcFWUUn7Y-fTzrdAmro6D-mWw0k3PhpauWATTWtd4Qjjh_hxgZTbr_Jlzs55Pc9tHN_FhHbcTGgaaGy978k080fsXPd3PQa0Mns1VqSCwafJ_UpFZH9Bv_nA89tbOHync9O-r73udlJ-8UMqzo_63rQ">
+      </a>
+      <nav class="main-nav" aria-label="التنقل الرئيسي">
+        <a class="active" href="/">الرئيسية</a>
+        <a href="#tracks">المسارات التعليمية</a>
+        <a href="#programs">المراحل الدراسية</a>
+        <% if (user && user.role === 'student') { %><a href="/book">حجز حصة</a><% } %>
+        <a href="<%= user ? '/dashboard' : '/register?tab=login' %>"><%= user ? ({ teacher: 'جدول المواعيد', moderator: 'لوحة المشرف' }[user.role] || 'الملف الشخصي') : 'تسجيل الدخول' %></a>
+      </nav>
+    </div>
+    <div class="header-end">
+      
+
+     <% if (user) { %>
+  <a class="header-cta header-profile" href="/dashboard"><%= { teacher: 'جدول المواعيد', moderator: 'لوحة المشرف' }[user.role] || 'ملفي الشخصي' %></a>
+  <form method="POST" action="/logout" style="margin:0">
+    <button class="header-cta" type="submit">تسجيل الخروج</button>
+  </form>
+<% } else { %>
+        <a class="header-cta" href="/register">انضم إلينا</a>
+      <% } %>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="القائمة" aria-expanded="false" aria-controls="mobileNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="قائمة الجوال">
+    <a class="active" href="/">الرئيسية</a>
+    <a href="#tracks">المسارات التعليمية</a>
+    <a href="#programs">المراحل الدراسية</a>
+    <% if (user && user.role === 'student') { %><a href="/book">حجز حصة</a><% } %>
+   <a href="<%= user ? '/dashboard' : '/register?tab=login' %>"><%= user ? ({ teacher: 'جدول المواعيد', moderator: 'لوحة المشرف' }[user.role] || 'الملف الشخصي') : 'تسجيل الدخول' %></a>
+  </nav>
+</header>
+
+<main class="site-main">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="hero-tag">
+          <span class="diamond">◆</span>
+          <span>انطلاق المسارات الأكاديمية التخصصية لعام 2026</span>
+        </div>
+        <h1 class="hero-title">
+          رحلتك نحو المعرفة تبدأ هنا —
+          <span class="accent" style="color: #ffffff;">تعلَّم باقتدار وبلا حدود</span>
+        </h1>
+        <p class="hero-desc">
+          تعلّم على راحتك وفي الوقت اللي يعجبك! اختر المعلم الأنسب لك، ورتّب جدولك بضغطة زر، واستمتع بتجربة تعلم ممتازة.
+        </p>
+        <div class="hero-buttons">
+          <a class="btn-lg btn-dark" href="<%= user && user.role === 'student' ? '/book' : '#tracks' %>">ابدأ التعلم الآن</a>
+          <a class="btn-lg btn-light" href="#programs">استكشف المسارات التخصصية</a>
+        </div>
+      </div>
+      <div class="hero-side" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- Tracks / 3D carousel -->
+  <section class="tracks" id="tracks">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-tag">مجالات التخصص المعرفي</span>
+          <h2 class="section-title">استكشف المسارات التعليمية الشاملة</h2>
+        </div>
+        <div class="tracks-side">
+          <p>برامج متكاملة تبدأ من المفاهيم التأسيسية وتصل بك إلى مستوى الكفاءة.</p>
+          <span class="pill">مدار تفاعلي ثلاثي الأبعاد • مرر الفأرة للتوقف المؤقت</span>
+        </div>
+      </div>
+
+      <div class="carousel-perspective">
+        <div class="carousel-float">
+          <div class="carousel-stage" id="carouselStage">
+
+            <div class="track-card card-cylinder-0">
+              <div>
+                <div class="track-tag">اللغات الأجنبية الثانية والتحدث</div>
+                <h3>اللغات الأجنبية والمحادثة</h3>
+                <p>إتقان اللغات الأجنبية كاللغة الفرنسية أو الألمانية وممارسة المحادثة بثقة لتحسين المستوى الدراسي.</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-1">
+              <div>
+                <div class="track-tag lime">اللغات</div>
+                <h3>اللغة العربية والآداب واللغات الأجنبية</h3>
+                <p>إتقان النحو، القواعد، البلاغة، والمهارات الكتابية والمحادثة مع أفضل المعلمين بالوقت اللي يناسبك</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-2">
+              <div>
+                <div class="track-tag">العلوم والرياضيات</div>
+                <h3>الرياضيات والفيزياء والكيمياء والأحياء</h3>
+                <p>تبسيط المفاهيم المعقدة، حل المسائل، وفهم أعمق للمواد العلمية بأسلوب تفاعلي وسهل.</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-3">
+              <div>
+                <div class="track-tag lime">العلوم الاجتماعية والإنسانيات</div>
+                <h3>الدراسات الاجتماعية والتاريخ والجغرافيا</h3>
+                <p>ربط المفاهيم، استيعاب الأحداث، وتسهيل حفظ وفهم المناهج الدراسية بكل أريحية.</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-4">
+              <div>
+                <div class="track-tag">التحضير للاختبارات والمناهج</div>
+                <h3>التحضير للاختبارات والقياس</h3>
+                <p>حل نماذج سابقة، تدريب على نماذج الأسئلة، ومراجعات مكثفة للوصول لأعلى الدرجات.</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-5">
+              <div>
+                <div class="track-tag lime">التأسيس والدعم اليومي</div>
+                <h3>حل الواجبات والمتابعة الدراسية</h3>
+                <p>مساعدة في حل الواجبات اليومية ومراجعة الدروس أولاً بأول لتعزيز ثقة الطالب بنفسه.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-controls">
+        <div class="carousel-buttons">
+          <button class="carousel-btn" id="prevTrackBtn" onclick="rotateTracks(60)" type="button">المسار السابق</button>
+          <button class="carousel-btn play" id="toggleTrackPlay" onclick="toggleOrbitPlay()" type="button">إيقاف الدوران</button>
+          <button class="carousel-btn" id="nextTrackBtn" onclick="rotateTracks(-60)" type="button">المسار التالي</button>
+        </div>
+        <div class="step-indicators">
+          <button class="is-active" onclick="setTrackAngle(0)"    title="المسار الأول"   type="button">١</button>
+          <button onclick="setTrackAngle(-60)"  title="المسار الثاني"  type="button">٢</button>
+          <button onclick="setTrackAngle(-120)" title="المسار الثالث"  type="button">٣</button>
+          <button onclick="setTrackAngle(-180)" title="المسار الرابع"  type="button">٤</button>
+          <button onclick="setTrackAngle(-240)" title="المسار الخامس"  type="button">٥</button>
+          <button onclick="setTrackAngle(-300)" title="المسار السادس"  type="button">٦</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let currentAngle = 0;
+    let isOrbitPaused = false;
+    const stage = document.getElementById('carouselStage');
+    const toggleBtn = document.getElementById('toggleTrackPlay');
+
+    function goToAngle(angle) {
+      if (!stage) return;
+      stage.style.animation = 'none';
+      stage.offsetHeight; // force reflow
+      currentAngle = angle;
+      stage.style.transform = 'rotateY(' + currentAngle + 'deg)';
+      stage.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+      if (toggleBtn) toggleBtn.textContent = 'تشغيل الدوران';
+      isOrbitPaused = true;
+    }
+    function rotateTracks(step) { goToAngle(currentAngle + step); }
+    function setTrackAngle(angle) { goToAngle(angle); }
+
+    function toggleOrbitPlay() {
+      if (!stage || !toggleBtn) return;
+      if (isOrbitPaused) {
+        stage.style.transition = 'none';
+        stage.style.transform = '';
+        stage.style.animation = 'orbitRotate 34s linear infinite';
+        stage.classList.remove('is-paused');
+        toggleBtn.textContent = 'إيقاف الدوران';
+        isOrbitPaused = false;
+      } else {
+        stage.classList.toggle('is-paused');
+        toggleBtn.textContent = stage.classList.contains('is-paused') ? 'تشغيل الدوران' : 'إيقاف الدوران';
+      }
+    }
+  </script>
+
+  <!-- Programs -->
+  <section class="programs" id="programs">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-tag">الاتجاهات الدراسية</span>
+          <h2 class="section-title">المراحل والمسارات التعليمية المعتمدة</h2>
+        </div>
+      </div>
+
+      <div class="programs-grid">
+
+        <div class="program light">
+          <div>
+            <div class="program-banner">
+              <span class="name">المسارات البريطانية الدولية</span>
+              <span class="en">International British Tracks (IG)</span>
+            </div>
+            <h3>التحضير لامتحانات كامبريدج وإدكسل (IGCSE)</h3>
+            <p>تحضير شامل لامتحانات كامبريدج وإدكسل في المواد الأساسية والعلوم المتقدمة مع التدريب المكثف على أوراق الامتحانات السابقة لضمان أعلى التقديرات (A*).</p>
+            <div class="program-info">
+              <div>المدة: العام الدراسي الكامل (Full Academic Year)</div>
+              <div>التطبيق: التدريب على أكثر من 10 سنوات من الامتحانات السابقة (Past Papers)</div>
+            </div>
+          </div>
+          <div>
+            <div class="progress-row"><span>نسبة التفوق والتميز</span><span class="val">96%</span></div>
+            <div class="progress"><div class="fill" style="width:96%"></div></div>
+            <a class="program-btn" style="display:block;text-align:center" href="<%= user && user.role === 'student' ? '/book' : '/register' %>">عرض تفاصيل البرنامج والتسجيل</a>
+          </div>
+        </div>
+
+        <div class="program dark">
+          <div>
+            <div class="program-banner">
+              <span class="name">نظام الدبلومة الأمريكية والاعتمادات الأكاديمية</span>
+              <span class="en">American Diploma System</span>
+            </div>
+            <h3>نظام الدبلومة الأمريكية ورفع المعدل (GPA &amp; SAT)</h3>
+            <p>دعم أكاديمي متكامل لمواد الـ GPA، الواجبات اليومية، والمشاريع البحثية، مع تدريب استراتيجي لاختبارات الـ SAT ومناهج المستوى المتقدم (AP).</p>
+            <div class="program-info">
+              <div>المدة: فصول دراسية معتمدة (Accredited Semesters)</div>
+              <div>التطبيق: محاكاة رقمية لاختبارات القبول الجامعي</div>
+            </div>
+          </div>
+          <div>
+            <div class="progress-row"><span>نسبة القبول الجامعي</span><span class="val">96%</span></div>
+            <div class="progress"><div class="fill" style="width:96%"></div></div>
+            <a class="program-btn" style="display:block;text-align:center" href="<%= user && user.role === 'student' ? '/book' : '/register' %>">عرض تفاصيل البرنامج والتسجيل</a>
+          </div>
+        </div>
+
+        <div class="program light">
+          <div>
+            <div class="program-banner">
+              <span class="name">شعب ومسارات المرحلة الثانوية</span>
+              <span class="en">High School Streams &amp; Tracks</span>
+            </div>
+            <h3>شعب ومسارات المرحلة الثانوية (علمي / أدبي / عام)</h3>
+            <p>شرح وتفصيل المناهج الوطنية بأسلوب حديث يركز على الفهم والتحليل، مع بنوك أسئلة متكاملة ومراجعات نهائية مكثفة تتماشى مع نظام التقويم الجديد.</p>
+            <div class="program-info">
+              <div>المدة: العام الدراسي الكامل (Full Academic Year)</div>
+              <div>التطبيق: حل نماذج الامتحانات وبنوك الأسئلة الشاملة</div>
+            </div>
+          </div>
+          <div>
+            <div class="progress-row"><span>نسبة التفوق والتميز</span><span class="val">91%</span></div>
+            <div class="progress"><div class="fill" style="width:91%"></div></div>
+            <a class="program-btn" style="display:block;text-align:center" href="<%= user && user.role === 'student' ? '/book' : '/register' %>">عرض تفاصيل البرنامج والتسجيل</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="head">
+      <span class="section-tag">التميز الأكاديمي والتعليمي</span>
+      <h2 class="section-title">لماذا يختار الطلاب وأولياء الأمور منصة "تعلَّم"؟</h2>
+      <p>صممنا منصة تجمع بين عمق المناهج وسهولة المتابعة، بعيداً عن النمطية والتكرار.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature navy">
+        <div>
+          <div class="feature-icon">أ</div>
+          <h3>نخبة المعلمين في المناهج</h3>
+          <p>نخبة من أفضل المعلمين والمعلمات المتخصصين في تدريس المناهج الدولية والوطنية، بأساليب مبسطة تضمن الفهم العميق والتفوق.</p>
+        </div>
+      </div>
+      <div class="feature blue">
+        <div>
+          <div class="feature-icon">ب</div>
+          <h3>معامل افتراضية وبنوك أسئلة</h3>
+          <p>وصول دائم لشروحات مصورة، مئات النماذج التدريبية، واختبارات تفاعلية تساعد الطالب على التدرب المستمر وكسر رهبة الامتحانات.</p>
+        </div>
+      </div>
+      <div class="feature navy">
+        <div>
+          <div class="feature-icon">ج</div>
+          <h3>متابعة فردية وتقارير أداء</h3>
+          <p>تقارير دورية ومتابعة لصيقة لمستوى الطالب الدراسي تبقي أولياء الأمور على اطلاع دائم بمدى التقدم والتحسن المستمر.</p>
+        </div>
+      </div>
+      <div class="feature blue">
+        <div>
+          <div class="feature-icon">د</div>
+          <h3>مراجعات نهائية مكثفة</h3>
+          <p>حصص مراجعة شاملة وحل مكثف لأوراق الامتحانات السابقة (Past Papers) ونماذج الوزارة لضمان أعلى الدرجات والتميز.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to action -->
+  <section class="cta" id="cta">
+    <div class="cta-inner">
+      <span class="cta-tag">ابدأ خطوتك الأولى اليوم</span>
+      <h2>انضم إلى <span>المتفوقين</span> واكتسب مهارات تصنع مستقبلك</h2>
+      <p>سجل حسابك الأكاديمي الآن وتمتع بوصول فوري للدروس التأسيسية، والاختبارات التفاعلية، ومجتمع الدعم الأكاديمي بدون أي تكاليف مسبقة.</p>
+      <div class="cta-buttons">
+        <% if (user) { %>
+          <a class="cta-btn primary" href="/dashboard">الانتقال إلى لوحتي</a>
+        <% } else { %>
+          <a class="cta-btn primary" href="/register">إنشاء حساب جديد</a>
+        <% } %>
+        <a class="cta-btn secondary" href="#tracks">تصفح كتالوج المسارات</a>
+      </div>
+      <div class="cta-trust">
+        <div><span class="diamond">◆</span><span>وصول دائم للمناهج المحدثة والمعامل الافتراضية</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col footer-brand">
+        <div class="footer-logo">
+          <img alt="" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWyv2ZEgtWhKi0A2a3GyK1ZkPaiMwj025LCYKuWECmfNjL3patDm0SCy36pHfwtNZ2d61h0ULQfYX8_GTjysI42oJw5759Ng9vGY_pVIGjrBd_g_GoX4VV3mDjuPHzO8zVQTr7wP--cw4yRw3H863wVBeVAKmVfuRS9Q_8MZyWs9ZSGKYRaoKr_L5-wtdKesJEB8rZpXRrA-Br0tCT7AvPxYbhkTvzI5N4EFYIN7eGCfyNBhLuLFdl7FkeRyk87JkZMQ">
+          <span>منصة تعلَّم</span>
+        </div>
+        <p>منظومة تعليمية رائدة تجمع بين نخبة المعلمين والمناهج الوطنية والدولية لبناء كفاءات المستقبل.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>أروقة التعلم</h4>
+        <div class="footer-links">
+          <a href="#tracks">المسارات التعليمية</a>
+          <a href="#programs">المراحل والاتجاهات الدراسية</a>
+          <a href="#features">لماذا تعلَّم؟</a>
+          <% if (!user) { %><a href="/register">إنشاء حساب</a><% } %>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>روابط مساندة</h4>
+        <div class="footer-links">
+          <a href="#">ميثاق الخصوصية</a>
+          <a href="#">شروط الاستخدام الأكاديمي</a>
+          <a href="#">مركز الدعم والتوجيه</a>
+          <a href="#">بوابة التحقق من الشهادات</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 منصة تعلَّم التعليمية. كافة الحقوق محفوظة.</span>
+      <div class="meta">
+        <span>مؤسسة تعليمية معتمدة</span>
+        <span>◆</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('menuToggle');
+    var nav = document.getElementById('mobileNav');
+    if (!btn || !nav) return;
+    function setOpen(o) { nav.classList.toggle('open', o); btn.setAttribute('aria-expanded', o); }
+    btn.addEventListener('click', function () { setOpen(!nav.classList.contains('open')); });
+    nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') setOpen(false); });
+  })();
+</script>
+<script src="/carousel-swipe.js"></script>
+<script src="/ascii-hero.js" data-src="/pic1.jpg" data-size="1.3"></script>
+</body>
+</html>

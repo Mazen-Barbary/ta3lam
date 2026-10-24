@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نسيت كلمة المرور — منصة تعلَّم</title>
+
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Katibeh&family=Reem+Kufi:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/register.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo-container">
+      <a class="logo-badge" href="/" title="منصة تعلَّم">
+        <img alt="منصة تعلم" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfbaX1bqbTy7zUY9yJ6W0uOxmq-pVZ-k-_TSBiVIRCm2xwbCLaKJm80-MZHnrrtp82tGseEQpIoiXR8zZlbBWKSbB3tFXWXqRj1gxu-ju1FOvRTHqcbpgTFPpWcFWUUn7Y-fTzrdAmro6D-mWw0k3PhpauWATTWtd4Qjjh_hxgZTbr_Jlzs55Pc9tHN_FhHbcTGgaaGy978k080fsXPd3PQa0Mns1VqSCwafJ_UpFZH9Bv_nA89tbOHync9O-r73udlJ-8UMqzo_63rQ">
+      </a>
+      <span class="brand-name">منصة تعلَّم</span>
+    </div>
+    <div>
+      <a class="back-link" href="/"><span>العودة للرئيسية</span><span>←</span></a>
+    </div>
+  </div>
+</header>
+
+<main class="auth-page">
+  <div class="auth-bg-circle-1"></div>
+  <div class="auth-bg-circle-2"></div>
+
+  <div class="auth-container auth-narrow">
+    <div class="auth-form-panel">
+      <h1 class="auth-title">نسيت كلمة المرور؟</h1>
+
+      <% if (sent) { %>
+        <div class="form-msg show" role="status">إذا كان هذا البريد مسجلاً لدينا، فقد أرسلنا إليه رابطاً لإعادة تعيين كلمة المرور. الرابط صالح لمدة 30 دقيقة. تحقق أيضاً من مجلد الرسائل غير المرغوب فيها.</div>
+      <% } else { %>
+        <p class="auth-lead">أدخل بريدك الإلكتروني وسنرسل إليه رابطاً لاختيار كلمة مرور جديدة. هذا يؤكد أنك صاحب الحساب.</p>
+        <form class="auth-form active" method="POST" action="/forgot">
+          <div class="form-group">
+            <label class="form-label" for="email">البريد الإلكتروني</label>
+            <input class="form-input" id="email" name="email" type="email" placeholder="example@domain.com" required autocomplete="email" autofocus>
+          </div>
+          <% if (locals.error) { %><div class="form-msg show" role="alert"><%= error %></div><% } %>
+          <button class="submit-btn" type="submit">إرسال رابط إعادة التعيين</button>
+        </form>
+      <% } %>
+
+      <a class="auth-back" href="/login">← العودة لتسجيل الدخول</a>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <span>© 2026 منصة تعلَّم التعليمية. كافة الحقوق محفوظة.</span>
+    <div class="footer-meta">
+      <span>مؤسسة تعليمية معتمدة</span>
+      <span>◆</span>
+      <span>الرياض، المملكة العربية السعودية</span>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

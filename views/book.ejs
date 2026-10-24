@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حجز حصة — منصة تعلَّم</title>
+
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Katibeh&family=Reem+Kufi:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Reuses the profile page styles -->
+<link rel="stylesheet" href="/css/profile.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-start">
+      <a class="logo-box" href="/"><span class="logo-title">تعلَّم</span></a>
+      <nav class="header-nav" aria-label="التنقل الرئيسي">
+        <a href="/">الرئيسية</a>
+        <a class="active" href="/book">حجز حصة</a>
+        <a href="/profile">الملف الشخصي</a>
+      </nav>
+    </div>
+    <div class="header-end">
+      <form method="POST" action="/logout" style="margin:0">
+        <button class="back-home-btn" type="submit"><span>تسجيل الخروج</span><span>←</span></button>
+      </form>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="القائمة" aria-expanded="false" aria-controls="mobileNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="قائمة الجوال">
+    <a href="/">الرئيسية</a>
+    <a class="active" href="/book">حجز حصة</a>
+    <a href="/profile">الملف الشخصي</a>
+  </nav>
+</header>
+
+<main class="main-content">
+  <div class="container">
+
+    <%- include('partials/alert') %>
+
+    <!-- Search -->
+    <section class="content-box">
+      <div class="box-head">
+        <div class="box-title-wrap">
+          <div class="box-icon">🔍</div>
+          <h2>ابحث عن معلم</h2>
+        </div>
+      </div>
+
+      <form class="search-form" method="GET" action="/book" role="search">
+        <div class="search-field">
+          <label class="search-label" for="subject">المادة</label>
+          <input class="search-input" id="subject" name="subject" type="search" list="subjectList"
+                 value="<%= subject %>" placeholder="مثال: الرياضيات" maxlength="60" autocomplete="off">
+          <datalist id="subjectList">
+            <% subjects.forEach(s => { %><option value="<%= s %>"><% }) %>
+          </datalist>
+        </div>
+        <div class="search-field">
+          <label class="search-label" for="q">اسم المعلم</label>
+          <input class="search-input" id="q" name="q" type="search"
+                 value="<%= q %>" placeholder="ابحث بالاسم" maxlength="60" autocomplete="off">
+        </div>
+        <div class="search-actions">
+          <button class="btn-track" type="submit">بحث</button>
+          <% if (subject || q) { %><a class="search-clear" href="/book">مسح البحث</a><% } %>
+        </div>
+      </form>
+
+      <% if (subjects.length) { %>
+        <div class="chip-row" aria-label="المواد">
+          <a class="chip<%= !subject ? ' is-active' : '' %>" href="/book<%= q ? '?q=' + encodeURIComponent(q) : '' %>">الكل</a>
+          <% subjects.forEach(s => { %>
+            <a class="chip<%= subject === s ? ' is-active' : '' %>"
+               href="/book?subject=<%= encodeURIComponent(s) %><%= q ? '&q=' + encodeURIComponent(q) : '' %>"><%= s %></a>
+          <% }) %>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- Results -->
+    <section class="content-box">
+      <div class="box-head">
+        <div class="box-title-wrap">
+          <div class="box-icon">👩‍🏫</div>
+          <h2>المعلمون</h2>
+        </div>
+        <span class="tag-track"><%= teachers.length %> معلم</span>
+      </div>
+
+      <% if (!teachers.length) { %>
+        <p class="track-desc">لا يوجد معلمون مطابقون لبحثك. جرّب مادة أو اسماً آخر.</p>
+      <% } %>
+
+      <% teachers.forEach(t => {
+           const list = slotsBy[t.user_id] || [];
+           const name = ((t.title || '') + ' ' + t.full_name).trim();
+      %>
+        <article class="track-item teacher-card">
+          <div class="teacher-top">
+            <div class="teacher-avatar" aria-hidden="true"><% if (t.photo) { %><img src="/uploads/teachers/<%= t.photo %>" alt=""><% } else { %><%= t.full_name.charAt(0) %><% } %></div>
+            <div class="teacher-id">
+              <div class="track-title"><%= name %></div>
+              <% if (t.subject) { %><span class="track-teacher"><%= t.subject %></span><% } %>
+            </div>
+            <span class="tag-honor"><%= list.length %> موعد متاح</span>
+          </div>
+
+          <% if (!list.length) { %>
+            <p class="track-desc" style="margin:14px 0 0">لا توجد مواعيد متاحة لهذا المعلم حالياً.</p>
+          <% } else { %>
+            <div class="slot-list">
+              <% list.forEach((s, i) => { %>
+                <% if (i === 4) { %></div><details class="more-slots"><summary>عرض كل المواعيد (<%= list.length - 4 %> أخرى)</summary><div class="slot-list"><% } %>
+                <form class="slot-row" method="POST" action="/book/<%= s.id %>">
+                  <div class="slot-info">
+                    <strong><%= fmtDate(s.slot_date) %></strong>
+                    <span><%= fmtTime(s.start_time) %> - <%= fmtTime(s.end_time) %></span>
+                    <span class="slot-seats">المقاعد المتبقية: <%= s.seats_left %> من <%= s.capacity %></span>
+                    <% if (s.has_meeting) { %><span class="slot-seats">🎥 عبر Zoom</span><% } %>
+                  </div>
+                  <button class="btn-track" type="submit">احجز ←</button>
+                </form>
+              <% }) %>
+            </div>
+            <% if (list.length > 4) { %></details><% } %>
+          <% } %>
+        </article>
+      <% }) %>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-bottom">
+      <span>© 2026 منصة تعلَّم التعليمية. كافة الحقوق محفوظة.</span>
+      <div class="footer-meta"><span>مؤسسة تعليمية معتمدة</span><span>◆</span></div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('menuToggle');
+    var nav = document.getElementById('mobileNav');
+    if (!btn || !nav) return;
+    function setOpen(o) { nav.classList.toggle('open', o); btn.setAttribute('aria-expanded', o); }
+    btn.addEventListener('click', function () { setOpen(!nav.classList.contains('open')); });
+    nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') setOpen(false); });
+  })();
+</script>
+</body>
+</html>

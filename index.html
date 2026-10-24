@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="shell-type" content="web_standard">
+<title>منصة تعلَّم</title>
+
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Katibeh&family=Reem+Kufi:wght@400;500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* 1. Variables & reset */
+:root {
+  --c1: #E3F2FD;
+  --c2: #90CAF9;
+  --c3: #2196F3;
+  --c4: #0D47A1;
+
+  --c1-90: rgba(227, 242, 253, 0.9);
+  --c1-80: rgba(227, 242, 253, 0.8);
+  --c1-40: rgba(227, 242, 253, 0.4);
+  --c4-20: rgba(13, 71, 161, 0.2);
+
+  --font-craft: 'Aref Ruqaa', 'Katibeh', serif;
+  --font-arabic: 'Tajawal', 'Reem Kufi', sans-serif;
+  --font-display: 'Reem Kufi', 'Tajawal', sans-serif;
+
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.15), 0 4px 6px -4px rgba(0,0,0,.15);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,.2), 0 8px 10px -6px rgba(0,0,0,.2);
+  --shadow-2xl: 0 25px 50px -12px rgba(0,0,0,.4);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background-color: var(--c1); color: var(--c4); }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 90px; }
+body {
+  font-family: var(--font-arabic);
+  line-height: 1.6;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+::selection { background: var(--c2); color: var(--c4); }
+::-webkit-scrollbar { display: none; }
+::placeholder { color: var(--c2); opacity: 0.9; }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3, h4 { font-size: inherit; font-weight: inherit; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button, input { font: inherit; color: inherit; margin: 0; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+:focus-visible { outline: 3px solid var(--c3); outline-offset: 2px; }
+
+/* 2. Header */
+.site-header {
+  position: fixed; top: 0; width: 100%; z-index: 50;
+  background: var(--c4); border-bottom: 2px solid var(--c2);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+}
+.header-inner { width: 100%; padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; }
+.header-start { display: flex; align-items: center; gap: 32px; }
+.header-end { display: flex; align-items: center; gap: 10px; }
+.logo-link { display: flex; align-items: center; background: var(--c1); border: 1px solid var(--c2); border-radius: 12px; }
+.logo-link img { height: 56px; width: auto; object-fit: contain; }
+
+.main-nav { display: none; align-items: center; gap: 8px; }
+.main-nav a { padding: 8px 16px; border-radius: 8px; color: var(--c1); font-family: var(--font-display); font-weight: 700; font-size: 16px; transition: background-color .15s, color .15s; }
+.main-nav a:hover { background: var(--c3); color: var(--c1); }
+.main-nav a.active { background: var(--c2); color: var(--c4); }
+
+.header-cta {
+  display: inline-block; padding: 8px 18px; border-radius: 12px;
+  background: var(--c1); color: var(--c4); border: 2px solid var(--c1);
+  font-family: var(--font-craft); font-weight: 700; font-size: 17px;
+  transition: background-color .15s, color .15s;
+}
+.header-cta:hover { background: var(--c2); color: var(--c4); }
+
+/* Mobile menu */
+.menu-toggle {
+  display: inline-flex; flex-direction: column; justify-content: center; gap: 5px;
+  width: 44px; height: 44px; padding: 0 10px; border-radius: 10px;
+  border: 2px solid var(--c2);
+}
+.menu-toggle span { display: block; height: 2px; background: var(--c1); border-radius: 2px; transition: transform .2s, opacity .2s; }
+.menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.mobile-nav { display: none; flex-direction: column; gap: 4px; padding: 8px 16px 16px; background: var(--c4); border-top: 1px solid var(--c2); }
+.mobile-nav.open { display: flex; }
+.mobile-nav a { padding: 12px 16px; border-radius: 8px; color: var(--c1); font-family: var(--font-display); font-weight: 700; }
+.mobile-nav a:hover, .mobile-nav a.active { background: var(--c3); }
+
+/* 3. Main + shared */
+.site-main { width: 100%; padding-top: 80px; background: var(--c1); min-height: 100vh; }
+.section-head { display: flex; flex-direction: column; gap: 16px; margin-bottom: 48px; text-align: right; }
+.section-tag { display: inline-block; padding: 4px 12px; border-radius: 4px; background: var(--c2); color: var(--c4); font-weight: 700; font-size: 12px; margin-bottom: 12px; }
+.section-title { font-family: var(--font-craft); font-size: 30px; line-height: 1.25; font-weight: 700; }
+.container { max-width: 1280px; margin: 0 auto; width: 100%; }
+
+/* 4. Hero */
+.hero { position: relative; overflow: hidden; padding: 64px 24px; border-bottom: 4px solid var(--c2); background: linear-gradient(to right, #E3F2FD, #90CAF9, #2196F3); }
+.hero-grid { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
+.hero-text { display: flex; flex-direction: column; align-items: flex-start; text-align: right; }
+.hero-tag { display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 9999px; background: var(--c4); color: var(--c1); border: 2px solid var(--c2); font-size: 14px; font-weight: 700; margin-bottom: 24px; }
+.hero-tag .diamond { color: var(--c2); margin-left: 8px; font-weight: 900; }
+.hero-title { font-family: var(--font-craft); font-size: 36px; line-height: 1.25; font-weight: 700; color: var(--c4); margin-bottom: 24px; text-align: right; }
+.hero-title .accent { display: block; margin-top: 8px; color: var(--c3); text-decoration: underline; text-decoration-color: var(--c4); text-decoration-thickness: 4px; text-underline-offset: 8px; }
+.hero-desc { font-size: 16px; line-height: 1.7; font-weight: 500; max-width: 672px; margin-bottom: 32px; text-align: right; }
+.hero-buttons { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 16px; margin-bottom: 40px; width: 100%; }
+.btn-lg { display: inline-block; padding: 16px 32px; border-radius: 12px; border: 2px solid var(--c4); font-family: var(--font-craft); font-weight: 700; font-size: 20px; transition: all .2s; }
+.btn-dark { background: var(--c4); color: var(--c1); box-shadow: var(--shadow-lg); }
+.btn-dark:hover { background: var(--c3); border-color: var(--c3); }
+.btn-light { background: var(--c1); color: var(--c4); }
+.btn-light:hover { background: var(--c2); }
+/* Empty on purpose: this column is the hover-reveal area for the hero photo */
+.hero-side { min-height: 240px; }
+
+/* 5. Tracks (3D carousel) */
+.tracks { position: relative; overflow: hidden; padding: 80px 24px; background: var(--c4); color: var(--c1); border-bottom: 4px solid var(--c2); }
+.tracks .section-title { color: var(--c1); }
+.tracks-side { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.tracks-side p { font-size: 16px; color: var(--c1-90); max-width: 448px; text-align: right; }
+.pill { padding: 4px 12px; border-radius: 9999px; background: var(--c3); color: var(--c1); font-size: 12px; font-weight: 700; border: 1px solid var(--c2); }
+
+.carousel-perspective { position: relative; display: flex; align-items: center; justify-content: center; width: 100%; min-height: 540px; padding: 64px 0; perspective: 1400px; perspective-origin: 50% 45%; }
+.carousel-float { transform-style: preserve-3d; animation: orbitFloat 6s ease-in-out infinite alternate; }
+.carousel-stage { position: relative; width: 280px; height: 400px; transform-style: preserve-3d; animation: orbitRotate 34s linear infinite; }
+.carousel-stage:hover, .carousel-stage.is-paused { animation-play-state: paused; }
+@keyframes orbitRotate { from { transform: rotateY(0deg); } to { transform: rotateY(-360deg); } }
+@keyframes orbitFloat {
+  0%   { transform: translateY(0)     rotateX(2deg); }
+  50%  { transform: translateY(-16px) rotateX(-2deg); }
+  100% { transform: translateY(12px)  rotateX(1deg); }
+}
+.card-cylinder-0 { transform: rotateY(0deg)   translateZ(270px); }
+.card-cylinder-1 { transform: rotateY(60deg)  translateZ(270px); }
+.card-cylinder-2 { transform: rotateY(120deg) translateZ(270px); }
+.card-cylinder-3 { transform: rotateY(180deg) translateZ(270px); }
+.card-cylinder-4 { transform: rotateY(240deg) translateZ(270px); }
+.card-cylinder-5 { transform: rotateY(300deg) translateZ(270px); }
+
+.track-card { position: absolute; inset: 0; padding: 28px; border-radius: 16px; background: var(--c3); border: 2px solid var(--c2); display: flex; flex-direction: column; justify-content: space-between; text-align: right; box-shadow: var(--shadow-2xl); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: border-color .15s; }
+.track-card:hover { border-color: var(--c1); }
+.track-tag { display: inline-block; padding: 4px 12px; border-radius: 6px; background: var(--c4); color: var(--c1); font-size: 12px; font-weight: 700; margin-bottom: 16px; border: 1px solid var(--c2); }
+.track-tag.lime { border-color: var(--c1); }
+.track-card h3 { font-family: var(--font-craft); font-size: 24px; line-height: 1.33; font-weight: 700; color: var(--c1); margin-bottom: 12px; }
+.track-card p { font-size: 14px; line-height: 1.7; color: var(--c1-90); margin-bottom: 24px; }
+
+.carousel-controls { margin-top: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; }
+.carousel-buttons { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; }
+.carousel-btn { padding: 10px 20px; border-radius: 12px; background: var(--c2); color: var(--c4); border: 1px solid var(--c2); font-family: var(--font-craft); font-weight: 700; font-size: 16px; transition: background-color .15s, color .15s; }
+.carousel-btn:hover { background: var(--c1); color: var(--c4); }
+.carousel-btn.play { padding: 10px 24px; background: var(--c1); color: var(--c4); border: 2px solid var(--c1); }
+.carousel-btn.play:hover { background: var(--c2); }
+
+.step-indicators { display: flex; align-items: center; gap: 8px; }
+.step-indicators button { width: 32px; height: 32px; border-radius: 8px; background: var(--c3); color: var(--c1); border: 1px solid var(--c2); font-family: var(--font-craft); font-weight: 700; font-size: 14px; transition: background-color .15s, color .15s; }
+.step-indicators button:hover { background: var(--c1); color: var(--c4); }
+.step-indicators button.is-active { background: var(--c2); color: var(--c4); border-color: var(--c1); }
+
+/* 6. Programs */
+.programs { padding: 80px 24px; background: var(--c2); color: var(--c4); border-bottom: 4px solid var(--c4); }
+.programs .section-tag { padding: 6px 16px; border-radius: 9999px; background: var(--c4); color: var(--c1); border: 1px solid var(--c1); }
+.programs .section-title { color: var(--c4); }
+.programs-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
+.program { display: flex; flex-direction: column; justify-content: space-between; padding: 28px; border-radius: 16px; border: 4px solid; text-align: right; box-shadow: var(--shadow-xl); }
+.program.light { background: var(--c1); color: var(--c4); border-color: var(--c4); }
+.program.dark  { background: var(--c4); color: var(--c1); border-color: var(--c1); }
+.program-banner { padding: 24px 16px; border-radius: 12px; border: 2px solid; text-align: center; margin-bottom: 24px; color: var(--c1); }
+.light .program-banner { background: var(--c3); border-color: var(--c4); }
+.dark  .program-banner { background: var(--c3); border-color: var(--c1); }
+.program-banner .name { display: block; font-family: var(--font-craft); font-size: 24px; line-height: 1.33; font-weight: 700; }
+.program-banner .en { display: block; margin-top: 4px; font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.program h3 { font-family: var(--font-craft); font-size: 24px; line-height: 1.33; font-weight: 700; margin-bottom: 12px; }
+.program p { font-size: 14px; line-height: 1.7; margin-bottom: 24px; }
+.light p { font-weight: 500; }
+.dark p { color: var(--c1-90); }
+.program-info { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 24px; padding: 16px; border-radius: 12px; font-size: 12px; font-weight: 700; }
+.light .program-info { background: var(--c1); color: var(--c4); border: 2px solid var(--c4); }
+.dark  .program-info { background: var(--c3); color: var(--c1); border: 1px solid var(--c2); }
+.progress-row { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+.progress-row .val { font-weight: 900; }
+.progress { width: 100%; height: 12px; border-radius: 9999px; overflow: hidden; border: 1px solid; margin-bottom: 16px; }
+.progress .fill { height: 100%; border-radius: 9999px; }
+.light .progress { background: var(--c4-20); border-color: var(--c4); }
+.light .progress .fill { background: var(--c4); }
+.dark  .progress { background: var(--c3); border-color: var(--c1); }
+.dark  .progress .fill { background: var(--c1); }
+.program-btn { width: 100%; padding: 14px; border-radius: 12px; border: 2px solid; font-family: var(--font-craft); font-weight: 700; font-size: 18px; transition: background-color .15s, color .15s; }
+.light .program-btn { background: var(--c4); color: var(--c1); border-color: var(--c4); }
+.light .program-btn:hover { background: var(--c3); border-color: var(--c3); }
+.dark  .program-btn { background: var(--c1); color: var(--c4); border-color: var(--c1); }
+.dark  .program-btn:hover { background: var(--c2); }
+
+/* 7. Features */
+.features { width: 100%; max-width: 1280px; margin: 0 auto; padding: 96px 24px; background: var(--c1); color: var(--c4); }
+.features .head { max-width: 768px; margin-bottom: 64px; text-align: right; }
+.features .section-tag { background: var(--c4); color: var(--c1); }
+.features .section-title { color: var(--c4); margin-bottom: 16px; }
+.features .head p { font-size: 16px; font-weight: 500; }
+.features-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.feature { padding: 32px; border-radius: 16px; border: 2px solid; color: var(--c1); text-align: right; display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-lg); }
+.feature.navy { background: var(--c4); border-color: var(--c2); }
+.feature.blue { background: var(--c3); border-color: var(--c4); }
+.feature-icon { width: 48px; height: 48px; border-radius: 12px; border: 2px solid; display: flex; align-items: center; justify-content: center; margin-bottom: 24px; font-family: var(--font-craft); font-size: 24px; font-weight: 700; }
+.navy .feature-icon { background: var(--c2); color: var(--c4); border-color: var(--c1); }
+.blue .feature-icon { background: var(--c1); color: var(--c4); border-color: var(--c4); }
+.feature h3 { font-family: var(--font-craft); font-size: 24px; line-height: 1.33; font-weight: 700; margin-bottom: 8px; color: var(--c1); }
+.feature p { font-size: 14px; line-height: 1.7; color: var(--c1-90); }
+
+/* 8. Call to action */
+.cta { padding: 80px 24px; background: var(--c2); color: var(--c4); border-top: 4px solid var(--c4); text-align: right; }
+.cta-inner { max-width: 1024px; margin: 0 auto; display: flex; flex-direction: column; align-items: flex-end; }
+.cta-tag { display: inline-block; padding: 6px 16px; border-radius: 9999px; background: var(--c1); color: var(--c4); border: 2px solid var(--c4); font-family: var(--font-craft); font-weight: 700; font-size: 16px; margin-bottom: 24px; }
+.cta h2 { font-family: var(--font-craft); font-size: 30px; line-height: 1.25; font-weight: 700; margin-bottom: 24px; }
+.cta h2 span { text-decoration: underline; text-decoration-color: var(--c4); text-decoration-thickness: 4px; }
+.cta p { max-width: 672px; margin-bottom: 40px; font-size: 16px; line-height: 1.7; font-weight: 500; }
+.cta-buttons { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 16px; width: 100%; }
+.cta-btn { width: 100%; padding: 16px 32px; border-radius: 12px; font-family: var(--font-craft); font-weight: 700; font-size: 20px; text-align: center; transition: all .2s; }
+.cta-btn.primary { background: var(--c4); color: var(--c1); border: 2px solid var(--c4); box-shadow: var(--shadow-lg); }
+.cta-btn.primary:hover { background: var(--c3); border-color: var(--c3); }
+.cta-btn.secondary { background: var(--c1); color: var(--c4); border: 2px solid var(--c4); }
+.cta-btn.secondary:hover { background: var(--c4); color: var(--c1); }
+.cta-trust { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: 32px; width: 100%; margin-top: 48px; padding-top: 32px; border-top: 2px solid var(--c1-40); font-size: 14px; font-weight: 700; }
+.cta-trust div { display: flex; align-items: center; gap: 8px; }
+.cta-trust .diamond { font-weight: 900; }
+
+/* 9. Footer */
+.site-footer { width: 100%; background: var(--c4); color: var(--c1); border-top: 4px solid var(--c2); text-align: right; }
+.footer-inner { width: 100%; padding: 64px 24px; }
+.footer-grid { display: grid; grid-template-columns: 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-col { display: flex; flex-direction: column; gap: 12px; }
+.footer-brand { gap: 16px; }
+.footer-logo { display: flex; align-items: center; gap: 12px; width: fit-content; padding: 6px 12px; background: var(--c1); border: 1px solid var(--c2); border-radius: 12px; }
+.footer-logo img { height: 32px; width: auto; object-fit: contain; }
+.footer-logo span { font-family: var(--font-craft); font-size: 20px; font-weight: 700; color: var(--c4); }
+.footer-brand p { font-size: 14px; line-height: 1.7; color: var(--c1-90); max-width: 384px; }
+.footer-col h4 { font-family: var(--font-craft); font-size: 20px; line-height: 1.4; font-weight: 700; color: var(--c2); }
+.footer-links { display: flex; flex-direction: column; gap: 8px; font-size: 14px; font-weight: 700; }
+.footer-links a { transition: color .15s; }
+.footer-links a:hover { color: var(--c2); }
+.footer-bottom { padding-top: 32px; border-top: 2px solid var(--c2); display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 16px; font-size: 14px; font-weight: 700; }
+.footer-bottom .meta { display: flex; align-items: center; gap: 16px; color: var(--c2); font-weight: 900; }
+
+/* 10. Responsive */
+@media (min-width: 640px) {
+  .hero-title { font-size: 48px; }
+  .hero-desc { font-size: 18px; }
+  .carousel-stage { width: 320px; }
+  .carousel-controls { flex-direction: row; }
+  .cta h2 { font-size: 36px; }
+  .cta p { font-size: 18px; }
+  .cta-buttons { flex-direction: row; width: auto; }
+  .cta-btn { width: auto; }
+  .program-info { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 768px) {
+  .section-head { flex-direction: row; align-items: flex-end; justify-content: space-between; }
+  .tracks-side { align-items: flex-end; }
+  .carousel-stage { width: 350px; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-bottom { flex-direction: row; }
+}
+@media (min-width: 1024px) {
+  .header-inner { padding-left: 48px; padding-right: 48px; }
+  .main-nav { display: flex; }
+  .menu-toggle { display: none; }
+  .mobile-nav, .mobile-nav.open { display: none; }
+  .hero { padding: 96px 48px; }
+  .hero-grid { grid-template-columns: repeat(12, 1fr); }
+  .hero-text { grid-column: span 8; }
+  .hero-side { grid-column: span 4; }
+  .hero-title { font-size: 60px; }
+  .hero-desc { font-size: 20px; }
+  .tracks, .programs { padding-left: 48px; padding-right: 48px; }
+  .features, .cta { padding-left: 48px; padding-right: 48px; }
+  .section-title { font-size: 36px; }
+  .programs-grid { grid-template-columns: repeat(3, 1fr); }
+  .features-grid { grid-template-columns: repeat(4, 1fr); }
+  .cta h2 { font-size: 48px; }
+  .footer-inner { padding-left: 48px; padding-right: 48px; }
+  .footer-grid { grid-template-columns: 2fr 1fr 1fr; }
+}
+@media (min-width: 769px) {
+  .card-cylinder-0 { transform: rotateY(0deg)   translateZ(400px); }
+  .card-cylinder-1 { transform: rotateY(60deg)  translateZ(400px); }
+  .card-cylinder-2 { transform: rotateY(120deg) translateZ(400px); }
+  .card-cylinder-3 { transform: rotateY(180deg) translateZ(400px); }
+  .card-cylinder-4 { transform: rotateY(240deg) translateZ(400px); }
+  .card-cylinder-5 { transform: rotateY(300deg) translateZ(400px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel-stage, .carousel-float { animation: none; }
+}
+</style>
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-start">
+      <a class="logo-link" href="index.html">
+        <img alt="منصة تعلم" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfbaX1bqbTy7zUY9yJ6W0uOxmq-pVZ-k-_TSBiVIRCm2xwbCLaKJm80-MZHnrrtp82tGseEQpIoiXR8zZlbBWKSbB3tFXWXqRj1gxu-ju1FOvRTHqcbpgTFPpWcFWUUn7Y-fTzrdAmro6D-mWw0k3PhpauWATTWtd4Qjjh_hxgZTbr_Jlzs55Pc9tHN_FhHbcTGgaaGy978k080fsXPd3PQa0Mns1VqSCwafJ_UpFZH9Bv_nA89tbOHync9O-r73udlJ-8UMqzo_63rQ">
+      </a>
+      <nav class="main-nav" aria-label="التنقل الرئيسي">
+        <a class="active" href="index.html">الرئيسية</a>
+        <a href="#tracks">المسارات التعليمية</a>
+        <a href="#programs">المراحل الدراسية</a>
+        <a href="profile.html">الملف الشخصي</a>
+      </nav>
+    </div>
+    <div class="header-end">
+      <a class="header-cta" href="register.html">انضم إلينا</a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="القائمة" aria-expanded="false" aria-controls="mobileNav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="قائمة الجوال">
+    <a class="active" href="index.html">الرئيسية</a>
+    <a href="#tracks">المسارات التعليمية</a>
+    <a href="#programs">المراحل الدراسية</a>
+    <a href="profile.html">الملف الشخصي</a>
+  </nav>
+</header>
+
+<main class="site-main">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="hero-tag">
+          <span class="diamond">◆</span>
+          <span>انطلاق المسارات الأكاديمية التخصصية لعام 2026</span>
+        </div>
+        <h1 class="hero-title">
+          رحلتك نحو المعرفة تبدأ هنا —
+          <span class="accent">تعلَّم باقتدار وبلا حدود</span>
+        </h1>
+        <p class="hero-desc">
+          تعلّم على راحتك وفي الوقت اللي يعجبك! اختر المعلم الأنسب لك، ورتّب جدولك بضغطة زر، واستمتع بتجربة تعلم ممتازة.
+        </p>
+        <div class="hero-buttons">
+          <a class="btn-lg btn-dark" href="#tracks">ابدأ التعلم الآن</a>
+          <a class="btn-lg btn-light" href="#programs">استكشف المسارات التخصصية</a>
+        </div>
+      </div>
+      <div class="hero-side" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- Tracks / 3D carousel -->
+  <section class="tracks" id="tracks">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-tag">مجالات التخصص المعرفي</span>
+          <h2 class="section-title">استكشف المسارات التعليمية الشاملة</h2>
+        </div>
+        <div class="tracks-side">
+          <p>برامج متكاملة تبدأ من المفاهيم التأسيسية وتصل بك إلى مستوى الكفاءة.</p>
+          <span class="pill">مدار تفاعلي ثلاثي الأبعاد • مرر الفأرة للتوقف المؤقت</span>
+        </div>
+      </div>
+
+      <div class="carousel-perspective">
+        <div class="carousel-float">
+          <div class="carousel-stage" id="carouselStage">
+
+            <div class="track-card card-cylinder-0">
+              <div>
+                <div class="track-tag">اللغات الأجنبية الثانية والتحدث</div>
+                <h3>اللغات الأجنبية والمحادثة</h3>
+                <p>إتقان اللغات الأجنبية كاللغة الفرنسية أو الألمانية وممارسة المحادثة بثقة لتحسين المستوى الدراسي.</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-1">
+              <div>
+                <div class="track-tag lime">اللغات</div>
+                <h3>اللغة العربية والآداب واللغات الأجنبية</h3>
+                <p>إتقان النحو، القواعد، البلاغة، والمهارات الكتابية والمحادثة مع أفضل المعلمين بالوقت اللي يناسبك</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-2">
+              <div>
+                <div class="track-tag">العلوم والرياضيات</div>
+                <h3>الرياضيات والفيزياء والكيمياء والأحياء</h3>
+                <p>تبسيط المفاهيم المعقدة، حل المسائل، وفهم أعمق للمواد العلمية بأسلوب تفاعلي وسهل.</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-3">
+              <div>
+                <div class="track-tag lime">العلوم الاجتماعية والإنسانيات</div>
+                <h3>الدراسات الاجتماعية والتاريخ والجغرافيا</h3>
+                <p>ربط المفاهيم، استيعاب الأحداث، وتسهيل حفظ وفهم المناهج الدراسية بكل أريحية.</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-4">
+              <div>
+                <div class="track-tag">التحضير للاختبارات والمناهج</div>
+                <h3>التحضير للاختبارات والقياس</h3>
+                <p>حل نماذج سابقة، تدريب على نماذج الأسئلة، ومراجعات مكثفة للوصول لأعلى الدرجات.</p>
+              </div>
+            </div>
+
+            <div class="track-card card-cylinder-5">
+              <div>
+                <div class="track-tag lime">التأسيس والدعم اليومي</div>
+                <h3>حل الواجبات والمتابعة الدراسية</h3>
+                <p>مساعدة في حل الواجبات اليومية ومراجعة الدروس أولاً بأول لتعزيز ثقة الطالب بنفسه.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-controls">
+        <div class="carousel-buttons">
+          <button class="carousel-btn" id="prevTrackBtn" onclick="rotateTracks(60)" type="button">المسار السابق</button>
+          <button class="carousel-btn play" id="toggleTrackPlay" onclick="toggleOrbitPlay()" type="button">إيقاف الدوران</button>
+          <button class="carousel-btn" id="nextTrackBtn" onclick="rotateTracks(-60)" type="button">المسار التالي</button>
+        </div>
+        <div class="step-indicators">
+          <button class="is-active" onclick="setTrackAngle(0)"    title="المسار الأول"   type="button">١</button>
+          <button onclick="setTrackAngle(-60)"  title="المسار الثاني"  type="button">٢</button>
+          <button onclick="setTrackAngle(-120)" title="المسار الثالث"  type="button">٣</button>
+          <button onclick="setTrackAngle(-180)" title="المسار الرابع"  type="button">٤</button>
+          <button onclick="setTrackAngle(-240)" title="المسار الخامس"  type="button">٥</button>
+          <button onclick="setTrackAngle(-300)" title="المسار السادس"  type="button">٦</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let currentAngle = 0;
+    let isOrbitPaused = false;
+    const stage = document.getElementById('carouselStage');
+    const toggleBtn = document.getElementById('toggleTrackPlay');
+
+    function goToAngle(angle) {
+      if (!stage) return;
+      stage.style.animation = 'none';
+      stage.offsetHeight; // force reflow
+      currentAngle = angle;
+      stage.style.transform = 'rotateY(' + currentAngle + 'deg)';
+      stage.style.transition = 'transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1)';
+      if (toggleBtn) toggleBtn.textContent = 'تشغيل الدوران';
+      isOrbitPaused = true;
+    }
+    function rotateTracks(step) { goToAngle(currentAngle + step); }
+    function setTrackAngle(angle) { goToAngle(angle); }
+
+    function toggleOrbitPlay() {
+      if (!stage || !toggleBtn) return;
+      if (isOrbitPaused) {
+        stage.style.transition = 'none';
+        stage.style.transform = '';
+        stage.style.animation = 'orbitRotate 34s linear infinite';
+        stage.classList.remove('is-paused');
+        toggleBtn.textContent = 'إيقاف الدوران';
+        isOrbitPaused = false;
+      } else {
+        stage.classList.toggle('is-paused');
+        toggleBtn.textContent = stage.classList.contains('is-paused') ? 'تشغيل الدوران' : 'إيقاف الدوران';
+      }
+    }
+  </script>
+
+  <!-- Programs -->
+  <section class="programs" id="programs">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <span class="section-tag">الاتجاهات الدراسية</span>
+          <h2 class="section-title">المراحل والمسارات التعليمية المعتمدة</h2>
+        </div>
+      </div>
+
+      <div class="programs-grid">
+
+        <div class="program light">
+          <div>
+            <div class="program-banner">
+              <span class="name">المسارات البريطانية الدولية</span>
+              <span class="en">International British Tracks (IG)</span>
+            </div>
+            <h3>التحضير لامتحانات كامبريدج وإدكسل (IGCSE)</h3>
+            <p>تحضير شامل لامتحانات كامبريدج وإدكسل في المواد الأساسية والعلوم المتقدمة مع التدريب المكثف على أوراق الامتحانات السابقة لضمان أعلى التقديرات (A*).</p>
+            <div class="program-info">
+              <div>المدة: العام الدراسي الكامل (Full Academic Year)</div>
+              <div>التطبيق: التدريب على أكثر من 10 سنوات من الامتحانات السابقة (Past Papers)</div>
+            </div>
+          </div>
+          <div>
+            <div class="progress-row"><span>نسبة التفوق والتميز</span><span class="val">96%</span></div>
+            <div class="progress"><div class="fill" style="width:96%"></div></div>
+            <a class="program-btn" style="display:block;text-align:center" href="register.html">عرض تفاصيل البرنامج والتسجيل</a>
+          </div>
+        </div>
+
+        <div class="program dark">
+          <div>
+            <div class="program-banner">
+              <span class="name">نظام الدبلومة الأمريكية والاعتمادات الأكاديمية</span>
+              <span class="en">American Diploma System</span>
+            </div>
+            <h3>نظام الدبلومة الأمريكية ورفع المعدل (GPA &amp; SAT)</h3>
+            <p>دعم أكاديمي متكامل لمواد الـ GPA، الواجبات اليومية، والمشاريع البحثية، مع تدريب استراتيجي لاختبارات الـ SAT ومناهج المستوى المتقدم (AP).</p>
+            <div class="program-info">
+              <div>المدة: فصول دراسية معتمدة (Accredited Semesters)</div>
+              <div>التطبيق: محاكاة رقمية لاختبارات القبول الجامعي</div>
+            </div>
+          </div>
+          <div>
+            <div class="progress-row"><span>نسبة القبول الجامعي</span><span class="val">96%</span></div>
+            <div class="progress"><div class="fill" style="width:96%"></div></div>
+            <a class="program-btn" style="display:block;text-align:center" href="register.html">عرض تفاصيل البرنامج والتسجيل</a>
+          </div>
+        </div>
+
+        <div class="program light">
+          <div>
+            <div class="program-banner">
+              <span class="name">شعب ومسارات المرحلة الثانوية</span>
+              <span class="en">High School Streams &amp; Tracks</span>
+            </div>
+            <h3>شعب ومسارات المرحلة الثانوية (علمي / أدبي / عام)</h3>
+            <p>شرح وتفصيل المناهج الوطنية بأسلوب حديث يركز على الفهم والتحليل، مع بنوك أسئلة متكاملة ومراجعات نهائية مكثفة تتماشى مع نظام التقويم الجديد.</p>
+            <div class="program-info">
+              <div>المدة: العام الدراسي الكامل (Full Academic Year)</div>
+              <div>التطبيق: حل نماذج الامتحانات وبنوك الأسئلة الشاملة</div>
+            </div>
+          </div>
+          <div>
+            <div class="progress-row"><span>نسبة التفوق والتميز</span><span class="val">91%</span></div>
+            <div class="progress"><div class="fill" style="width:91%"></div></div>
+            <a class="program-btn" style="display:block;text-align:center" href="register.html">عرض تفاصيل البرنامج والتسجيل</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="head">
+      <span class="section-tag">التميز الأكاديمي والتعليمي</span>
+      <h2 class="section-title">لماذا يختار الطلاب وأولياء الأمور منصة "تعلَّم"؟</h2>
+      <p>صممنا منصة تجمع بين عمق المناهج وسهولة المتابعة، بعيداً عن النمطية والتكرار.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature navy">
+        <div>
+          <div class="feature-icon">أ</div>
+          <h3>نخبة المعلمين في المناهج</h3>
+          <p>نخبة من أفضل المعلمين والمعلمات المتخصصين في تدريس المناهج الدولية والوطنية، بأساليب مبسطة تضمن الفهم العميق والتفوق.</p>
+        </div>
+      </div>
+      <div class="feature blue">
+        <div>
+          <div class="feature-icon">ب</div>
+          <h3>معامل افتراضية وبنوك أسئلة</h3>
+          <p>وصول دائم لشروحات مصورة، مئات النماذج التدريبية، واختبارات تفاعلية تساعد الطالب على التدرب المستمر وكسر رهبة الامتحانات.</p>
+        </div>
+      </div>
+      <div class="feature navy">
+        <div>
+          <div class="feature-icon">ج</div>
+          <h3>متابعة فردية وتقارير أداء</h3>
+          <p>تقارير دورية ومتابعة لصيقة لمستوى الطالب الدراسي تبقي أولياء الأمور على اطلاع دائم بمدى التقدم والتحسن المستمر.</p>
+        </div>
+      </div>
+      <div class="feature blue">
+        <div>
+          <div class="feature-icon">د</div>
+          <h3>مراجعات نهائية مكثفة</h3>
+          <p>حصص مراجعة شاملة وحل مكثف لأوراق الامتحانات السابقة (Past Papers) ونماذج الوزارة لضمان أعلى الدرجات والتميز.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to action -->
+  <section class="cta" id="cta">
+    <div class="cta-inner">
+      <span class="cta-tag">ابدأ خطوتك الأولى اليوم</span>
+      <h2>انضم إلى <span>المتفوقين</span> واكتسب مهارات تصنع مستقبلك</h2>
+      <p>سجل حسابك الأكاديمي الآن وتمتع بوصول فوري للدروس التأسيسية، والاختبارات التفاعلية، ومجتمع الدعم الأكاديمي بدون أي تكاليف مسبقة.</p>
+      <div class="cta-buttons">
+        <a class="cta-btn primary" href="register.html">إنشاء حساب متعلم جديد</a>
+        <a class="cta-btn secondary" href="#tracks">تصفح كتالوج المسارات</a>
+      </div>
+      <div class="cta-trust">
+        <div><span class="diamond">◆</span><span>وصول دائم للمناهج المحدثة والمعامل الافتراضية</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-col footer-brand">
+        <div class="footer-logo">
+          <img alt="" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWyv2ZEgtWhKi0A2a3GyK1ZkPaiMwj025LCYKuWECmfNjL3patDm0SCy36pHfwtNZ2d61h0ULQfYX8_GTjysI42oJw5759Ng9vGY_pVIGjrBd_g_GoX4VV3mDjuPHzO8zVQTr7wP--cw4yRw3H863wVBeVAKmVfuRS9Q_8MZyWs9ZSGKYRaoKr_L5-wtdKesJEB8rZpXRrA-Br0tCT7AvPxYbhkTvzI5N4EFYIN7eGCfyNBhLuLFdl7FkeRyk87JkZMQ">
+          <span>منصة تعلَّم</span>
+        </div>
+        <p>منظومة تعليمية رائدة تجمع بين نخبة المعلمين والمناهج الوطنية والدولية لبناء كفاءات المستقبل.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4>أروقة التعلم</h4>
+        <div class="footer-links">
+          <a href="#tracks">المسارات التعليمية</a>
+          <a href="#programs">المراحل والاتجاهات الدراسية</a>
+          <a href="#features">لماذا تعلَّم؟</a>
+          <a href="register.html">إنشاء حساب</a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>روابط مساندة</h4>
+        <div class="footer-links">
+          <a href="#">ميثاق الخصوصية</a>
+          <a href="#">شروط الاستخدام الأكاديمي</a>
+          <a href="#">مركز الدعم والتوجيه</a>
+          <a href="#">بوابة التحقق من الشهادات</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© 2026 منصة تعلَّم التعليمية. كافة الحقوق محفوظة.</span>
+      <div class="meta">
+        <span>مؤسسة تعليمية معتمدة</span>
+        <span>◆</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var btn = document.getElementById('menuToggle');
+    var nav = document.getElementById('mobileNav');
+    if (!btn || !nav) return;
+    function setOpen(o) { nav.classList.toggle('open', o); btn.setAttribute('aria-expanded', o); }
+    btn.addEventListener('click', function () { setOpen(!nav.classList.contains('open')); });
+    nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') setOpen(false); });
+  })();
+</script>
+<script src="carousel-swipe.js"></script>
+<script src="ascii-hero.js" data-src="pic1.jpg" data-size="1.3"></script>
+</body>
+</html>

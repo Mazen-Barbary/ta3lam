@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إدارة الأوقات والحجوزات — منصة تعلَّم</title>
+
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Katibeh&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/teacher.css">
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-start">
+      <div class="logo-badge">
+        <span>تعلَّم</span>
+      </div>
+      <nav class="header-nav">
+        <a href="/">الرئيسية</a>
+        <a class="active" href="/teacher">جدول المواعيد والحجوزات</a>
+      </nav>
+    </div>
+    <div>
+      <form method="POST" action="/logout" style="margin:0">
+        <button class="header-back-btn" type="submit"><span>تسجيل الخروج</span><span>←</span></button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<main class="site-main">
+  <div class="container">
+
+    <%- include('partials/alert') %>
+
+    <!-- Teacher hero -->
+    <section class="teacher-hero">
+      <div class="hero-top-row">
+        <div class="teacher-info-group">
+          <div class="teacher-avatar">
+            <% if (teacher.photo) { %>
+              <img src="/uploads/teachers/<%= teacher.photo %>" alt="<%= teacher.full_name %>">
+            <% } else { %>
+              <span><%= teacher.full_name.charAt(0) %></span>
+            <% } %>
+            <div class="teacher-badge-verified">✓</div>
+          </div>
+          <div class="teacher-titles">
+            <h1><%= teacher.title || '' %> <%= teacher.full_name %></h1>
+            <div class="teacher-tagline">
+              <% if (teacher.subject) { %>
+                <span class="teacher-role-tag"><%= teacher.subject %></span>
+                <span>•</span>
+              <% } %>
+              <span><%= user.email %></span>
+              <% if (teacher.phone_number) { %>
+                <span>•</span>
+                <span dir="ltr"><%= teacher.phone_number %></span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn-primary-action" onclick="document.getElementById('quickAddSlotSection').scrollIntoView({behavior: 'smooth'})" type="button">
+            <span>+</span>
+            <span>إضافة فترات متاحة جديدة</span>
+          </button>
+        </div>
+      </div>
+
+      <form class="photo-form" method="POST" action="/teacher/photo" enctype="multipart/form-data">
+        <label class="photo-label" for="photoFile">صورتي الشخصية (تظهر للطلاب)</label>
+        <input class="photo-input" id="photoFile" name="photo" type="file" accept="image/jpeg,image/png,image/webp" required>
+        <button class="photo-save" type="submit">حفظ الصورة</button>
+        <% if (teacher.photo) { %>
+          <button class="photo-remove" type="submit" formaction="/teacher/photo/delete" formenctype="application/x-www-form-urlencoded" formnovalidate>حذف الصورة</button>
+        <% } %>
+      </form>
+      <script>
+        document.getElementById('photoFile').addEventListener('change', function () {
+          var f = this.files[0];
+          if (f && f.size > 2 * 1024 * 1024) { alert('حجم الصورة يجب ألا يتجاوز 2 ميجابايت.'); this.value = ''; }
+        });
+      </script>
+
+      <% if (locals.zoom && zoom.enabled) { %>
+      <div class="zoom-box">
+        <span class="photo-label">Zoom</span>
+        <% if (zoom.connected) { %>
+          <span class="zoom-ok">✓ حسابك مرتبط — يُنشأ اجتماع Zoom تلقائياً عند نشر كل موعد</span>
+          <form method="POST" action="/teacher/zoom/disconnect" style="margin:0">
+            <button class="photo-remove" type="submit">فصل Zoom</button>
+          </form>
+        <% } else { %>
+          <span>اربط حسابك ليُنشأ اجتماع Zoom تلقائياً لكل موعد تنشره</span>
+          <a class="photo-save" href="/teacher/zoom/connect">ربط حساب Zoom</a>
+        <% } %>
+      </div>
+      <% } %>
+
+      <div class="hero-metrics-grid">
+        <div class="metric-box">
+          <div class="metric-label">مواعيد متاحة للحجز</div>
+          <div class="metric-val"><%= stats.open_slots %></div>
+          <div class="metric-sub">جاهزة للحجز الفوري</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">حصص مؤكدة قادمة</div>
+          <div class="metric-val"><%= stats.upcoming %></div>
+          <div class="metric-sub">حجوزات لم يحن موعدها بعد</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">إجمالي الحجوزات المؤكدة</div>
+          <div class="metric-val"><%= stats.confirmed_total %></div>
+          <div class="metric-sub">منذ انضمامك</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">الحجوزات الملغاة</div>
+          <div class="metric-val"><%= stats.canceled_total %></div>
+          <div class="metric-sub">إجمالي الإلغاءات</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="dashboard-grid">
+
+      <div class="main-column">
+
+        <!-- Timetable -->
+        <div class="panel-card">
+          <div class="panel-head">
+            <div class="panel-title-group">
+              <div class="panel-icon-badge">📅</div>
+              <h2 class="panel-title">إدارة المواعيد المتاحة وجدول الحصص (الأيام السبعة القادمة)</h2>
+            </div>
+            <div class="legend-group">
+              <div class="legend-item"><span class="dot dot-avail"></span><span>متاح للحجز</span></div>
+              <div class="legend-item"><span class="dot dot-booked"></span><span>مكتمل العدد</span></div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <div class="timetable-grid">
+              <% days.forEach(day => { %>
+                <div class="day-column <%= day.isToday ? 'today' : '' %>">
+                  <div class="day-head">
+                    <div class="day-name"><%= day.name %><%= day.isToday ? ' (اليوم)' : '' %></div>
+                    <div class="day-date"><%= day.label %></div>
+                  </div>
+                  <div class="slots-container">
+                    <% day.slots.forEach(s => { %>
+                      <div class="time-slot-card <%= s.is_booked ? 'slot-booked' : 'slot-available' %>">
+                        <span class="slot-time"><%= fmtTime(s.start_time) %> - <%= fmtTime(s.end_time) %></span>
+                        <span class="slot-title"><%= s.booked_count %> / <%= s.capacity %> طلاب</span>
+                        <% if (s.booked_count > 0) { %><span class="slot-meta"><%= s.f_name %></span><% } %>
+                        <span class="slot-meta"><%= s.is_booked ? 'مكتمل العدد' : 'متاح للحجز' %></span>
+                        <% if (s.join_url) { %><a class="slot-meta" href="<%= s.join_url %>" target="_blank" rel="noopener noreferrer">🎥 اجتماع Zoom</a><% } %>
+                        <% if (s.booked_count === 0) { %>
+                          <form method="POST" action="/teacher/slots/<%= s.id %>/delete" style="margin:0">
+                            <button class="btn-cancel" type="submit" style="padding:2px 0;">حذف الموعد</button>
+                          </form>
+                        <% } %>
+                      </div>
+                    <% }) %>
+                    <% if (!day.slots.length) { %>
+                      <div class="slot-meta" style="text-align:center;color:#64748B;">لا توجد مواعيد</div>
+                    <% } %>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+
+            <!-- Add slot form -->
+            <div class="quick-add-form-wrapper" id="quickAddSlotSection">
+              <div class="quick-add-title">
+                <span>➕</span>
+                <span>إتاحة أوقات تدريس جديدة للطلاب فوراً</span>
+              </div>
+              <form method="POST" action="/teacher/slots" class="form-inline-grid" style="grid-template-columns: repeat(4, 1fr) auto;">
+                <div class="input-control-group">
+                  <label for="slotDate">التاريخ</label>
+                  <input class="input-field-custom" id="slotDate" name="slot_date" type="date" min="<%= today %>" value="<%= today %>" required>
+                </div>
+                <div class="input-control-group">
+                  <label for="startTime">وقت البدء</label>
+                  <input class="input-field-custom" id="startTime" name="start_time" type="time" required>
+                </div>
+                <div class="input-control-group">
+                  <label for="endTime">وقت الانتهاء</label>
+                  <input class="input-field-custom" id="endTime" name="end_time" type="time" required>
+                </div>
+                <div class="input-control-group">
+                  <label for="capacity">عدد الطلاب</label>
+                  <input class="input-field-custom" id="capacity" name="capacity" type="number" min="1" max="50" value="1" required>
+                </div>
+                <button class="submit-slot-btn" type="submit">نشر وإتاحة الموعد</button>
+                <div class="input-control-group" style="grid-column:1/-1">
+                  <label for="meetingUrl">رابط اجتماع Zoom (اختياري<% if (locals.zoom && zoom.connected) { %> — اتركه فارغاً ليُنشأ تلقائياً<% } %>)</label>
+                  <input class="input-field-custom" id="meetingUrl" name="meeting_url" type="url" dir="ltr" placeholder="https://zoom.us/j/..." maxlength="500">
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Bookings -->
+        <div class="panel-card">
+          <div class="panel-head">
+            <div class="panel-title-group">
+              <div class="panel-icon-badge">📩</div>
+              <h2 class="panel-title">الحجوزات القادمة</h2>
+            </div>
+            <span style="background: var(--c1); color: var(--c4); border: 1px solid var(--c2); padding: 4px 12px; border-radius: 8px; font-weight: 700; font-size: 13px;">
+              <%= bookings.length %> حجز
+            </span>
+          </div>
+
+          <div class="panel-body">
+            <div class="bookings-list">
+              <% if (!bookings.length) { %>
+                <p class="student-level">لا توجد حجوزات قادمة حتى الآن.</p>
+              <% } %>
+
+              <% bookings.forEach(b => { %>
+                <div class="booking-row-card">
+                  <div class="student-col">
+                    <div class="student-avatar-mini"><%= b.f_name.charAt(0) %></div>
+                    <div>
+                      <div class="student-name"><%= b.f_name %> <%= b.l_name %></div>
+                      <div class="student-level"><%= b.email %><% if (b.phone_number) { %> • <span dir="ltr"><%= b.phone_number %></span><% } %></div>
+                    </div>
+                  </div>
+
+                  <div class="booking-details-col">
+                    <div class="time-detail">
+                      <span>🗓️ <%= fmtDate(b.slot_date) %></span>
+                      <span>•</span>
+                      <span>⏰ <%= fmtTime(b.start_time) %> - <%= fmtTime(b.end_time) %></span>
+                      <span>•</span>
+                      <span class="price-tag"><%= b.status === 'cancelled' ? 'ملغي' : 'مؤكد' %></span>
+                    </div>
+                  </div>
+
+                  <div class="booking-actions-col">
+                    <% if (b.status === 'confirmed') { %>
+                      <form method="POST" action="/bookings/<%= b.id %>/cancel" style="margin:0" onsubmit="return confirm('هل تريد إلغاء هذا الحجز؟');">
+                        <button class="btn-cancel" type="submit">إلغاء الحجز</button>
+                      </form>
+                    <% } %>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Side column -->
+      <div class="side-column">
+
+        <% if (nextSession) { %>
+          <div class="live-session-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div class="live-badge-pulse">
+                <span class="pulse-circle"></span>
+                <span>الحصة القادمة</span>
+              </div>
+            </div>
+            <div class="live-student-info">
+              <h4><%= nextSession.f_name %> <%= nextSession.l_name %></h4>
+              <div class="live-subject-text"><%= teacher.subject || '' %></div>
+            </div>
+            <div class="countdown-box">
+              <div><%= fmtDate(nextSession.slot_date) %></div>
+              <div class="countdown-timer"><%= fmtTime(nextSession.start_time) %></div>
+            </div>
+          </div>
+        <% } else { %>
+          <div class="side-widget">
+            <div class="side-widget-title"><span>⏱</span><span>الحصة القادمة</span></div>
+            <p class="student-level">لا توجد حصص مؤكدة قادمة.</p>
+          </div>
+        <% } %>
+
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <span>© 2026 منصة تعلَّم التعليمية. كافة الحقوق محفوظة للكوادر التعليمية المعتمدة.</span>
+    </div>
+    <div class="footer-meta">
+      <span>مؤسسة تعليمية مرخصة</span>
+      <span>◆</span>
+      <span>بوابة شؤون المعلمين والأكاديميين</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

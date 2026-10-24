@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="shell-type" content="web_standard">
+<title>إدارة الأوقات والحجوزات — منصة تعلَّم</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Katibeh&family=Reem+Kufi:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   1. Variables & Reset
+   ========================================================= */
+:root {
+  --c1: #E3F2FD;   /* pale sky / light surface */
+  --c2: #90CAF9;   /* soft sky / borders / chips */
+  --c3: #2196F3;   /* royal blue / accents */
+  --c4: #0D47A1;   /* deep navy / primary text / dark hero */
+
+  --c1-90: rgba(227, 242, 253, 0.9);
+  --c1-80: rgba(227, 242, 253, 0.8);
+  --c1-40: rgba(227, 242, 253, 0.4);
+  --c4-20: rgba(13, 71, 161, 0.15);
+  --c4-10: rgba(13, 71, 161, 0.08);
+
+  --font-craft: 'Aref Ruqaa', 'Katibeh', serif;
+  --font-arabic: 'Reem Kufi', 'Aref Ruqaa', sans-serif;
+
+  --shadow-sm: 0 2px 4px rgba(13,71,161,.06);
+  --shadow-md: 0 4px 6px -1px rgba(13,71,161,.1), 0 2px 4px -2px rgba(13,71,161,.08);
+  --shadow-lg: 0 10px 15px -3px rgba(13,71,161,.12), 0 4px 6px -4px rgba(13,71,161,.08);
+  --shadow-xl: 0 20px 25px -5px rgba(13,71,161,.18), 0 8px 10px -6px rgba(13,71,161,.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--c1);
+  color: var(--c4);
+}
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-arabic);
+  line-height: 1.5;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+::selection { background: var(--c2); color: var(--c4); }
+::-webkit-scrollbar { display: none; }
+::placeholder { color: var(--c3); opacity: 0.7; }
+
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3, h4 { font-size: inherit; font-weight: inherit; }
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; margin: 0; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+
+.font-craft  { font-family: var(--font-craft); }
+.font-arabic { font-family: var(--font-arabic); }
+
+/* =========================================================
+   2. Header
+   ========================================================= */
+.site-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+  background: var(--c4);
+  border-bottom: 2px solid var(--c2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-start { display: flex; align-items: center; gap: 24px; }
+.logo-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--c1);
+  border: 1px solid var(--c2);
+  border-radius: 12px;
+  padding: 6px 16px;
+}
+.logo-badge span {
+  font-family: var(--font-craft);
+  font-size: 24px;
+  font-weight: 700;
+  color: #009990;
+  letter-spacing: -0.5px;
+}
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.header-nav a {
+  padding: 6px 14px;
+  border-radius: 8px;
+  color: var(--c1);
+  font-weight: 600;
+  font-size: 15px;
+  transition: all .15s;
+}
+.header-nav a:hover { background: var(--c3); color: #fff; }
+.header-nav a.active { background: var(--c3); font-weight: 700; }
+
+.header-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 10px;
+  background: var(--c1);
+  color: var(--c4);
+  font-family: var(--font-craft);
+  font-weight: 700;
+  font-size: 16px;
+  border: 1px solid var(--c2);
+  transition: all .2s;
+}
+.header-back-btn:hover {
+  background: var(--c2);
+  color: var(--c4);
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   3. Main Container
+   ========================================================= */
+.site-main {
+  width: 100%;
+  padding-top: 86px;
+  padding-bottom: 70px;
+  min-height: 100vh;
+}
+.container {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+/* =========================================================
+   4. Teacher Profile Header (Hero)
+   ========================================================= */
+.teacher-hero {
+  background: var(--c4);
+  color: var(--c1);
+  border-radius: 20px;
+  border: 2px solid var(--c2);
+  padding: 28px 32px;
+  box-shadow: var(--shadow-xl);
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.hero-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.teacher-info-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.teacher-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--c3), #009990);
+  border: 2px solid var(--c2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-craft);
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+.teacher-badge-verified {
+  position: absolute;
+  bottom: -4px;
+  left: -4px;
+  background: #009990;
+  color: #fff;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--c4);
+  font-size: 11px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.teacher-titles h1 {
+  font-family: var(--font-craft);
+  font-size: 32px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.teacher-tagline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--c1-90);
+}
+.teacher-role-tag {
+  background: rgba(227, 242, 253, 0.15);
+  border: 1px solid var(--c2);
+  padding: 2px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-primary-action {
+  padding: 12px 22px;
+  border-radius: 12px;
+  background: #009990;
+  color: #fff;
+  font-family: var(--font-craft);
+  font-size: 18px;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-md);
+  transition: all .2s;
+}
+.btn-primary-action:hover {
+  background: #00b3a8;
+  transform: translateY(-2px);
+}
+.btn-secondary-action {
+  padding: 11px 18px;
+  border-radius: 12px;
+  background: rgba(227, 242, 253, 0.12);
+  color: var(--c1);
+  font-family: var(--font-craft);
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid var(--c2);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all .2s;
+}
+.btn-secondary-action:hover {
+  background: rgba(227, 242, 253, 0.22);
+}
+
+/* Metrics Row */
+.hero-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(144, 202, 249, 0.3);
+}
+.metric-box {
+  background: rgba(13, 71, 161, 0.4);
+  border: 1px solid var(--c2);
+  border-radius: 14px;
+  padding: 14px 18px;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c2);
+  margin-bottom: 6px;
+}
+.metric-val {
+  font-family: var(--font-craft);
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+}
+.metric-sub {
+  font-size: 12px;
+  color: var(--c1-80);
+  margin-top: 4px;
+}
+
+/* =========================================================
+   5. Dashboard Core 2-Column Layout
+   ========================================================= */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Section Card Container */
+.panel-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 2px solid var(--c2);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.panel-head {
+  padding: 18px 24px;
+  border-bottom: 1.5px solid var(--c2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #f7faff;
+}
+.panel-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.panel-icon-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--c4);
+  color: var(--c1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-craft);
+  font-size: 18px;
+  font-weight: 700;
+}
+.panel-title {
+  font-family: var(--font-craft);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--c4);
+}
+.panel-body {
+  padding: 24px;
+}
+
+/* =========================================================
+   6. Calendar & Time Slot Scheduler
+   ========================================================= */
+.calendar-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 20px;
+  background: var(--c1);
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--c2);
+}
+.week-navigator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.nav-arrow-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--c4);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  transition: all .15s;
+}
+.nav-arrow-btn:hover { background: var(--c3); }
+.current-week-title {
+  font-family: var(--font-craft);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c4);
+}
+
+.legend-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.dot-avail { background: #009990; }
+.dot-booked { background: var(--c4); }
+.dot-pending { background: #F59E0B; }
+.dot-blocked { background: #CBD5E1; }
+
+/* Weekly Timetable Grid */
+.timetable-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.day-column {
+  background: #fbfdff;
+  border: 1px solid var(--c2);
+  border-radius: 12px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.day-column.today {
+  border-color: #009990;
+  border-width: 2px;
+  background: #f0fdf9;
+}
+.day-head {
+  text-align: center;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed var(--c2);
+}
+.day-name {
+  font-family: var(--font-craft);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c4);
+}
+.day-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c3);
+}
+
+.slots-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 250px;
+}
+.time-slot-card {
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all .15s;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.time-slot-card:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+
+/* Slot States */
+.slot-available {
+  background: #E6FFFA;
+  border-color: #009990;
+  color: #005E58;
+}
+.slot-booked {
+  background: var(--c4);
+  border-color: var(--c4);
+  color: #fff;
+}
+.slot-booked .slot-time { color: var(--c2); }
+.slot-pending {
+  background: #FFFBEB;
+  border-color: #F59E0B;
+  color: #92400E;
+}
+.slot-blocked {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #64748B;
+}
+
+.slot-time {
+  font-weight: 700;
+  font-size: 13px;
+}
+.slot-title {
+  font-weight: 600;
+  line-height: 1.3;
+}
+.slot-meta {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.add-slot-day-btn {
+  margin-top: auto;
+  border: 1px dashed var(--c3);
+  background: transparent;
+  color: var(--c3);
+  border-radius: 8px;
+  padding: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all .15s;
+}
+.add-slot-day-btn:hover {
+  background: var(--c1);
+  color: var(--c4);
+  border-color: var(--c4);
+}
+
+/* =========================================================
+   7. Quick Add Slot Interactive Form
+   ========================================================= */
+.quick-add-form-wrapper {
+  background: #f7faff;
+  border: 1.5px solid var(--c2);
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin-top: 20px;
+}
+.quick-add-title {
+  font-family: var(--font-craft);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c4);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.form-inline-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) 1.2fr auto;
+  gap: 12px;
+  align-items: end;
+}
+.input-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.input-control-group label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--c4);
+}
+.input-field-custom {
+  background: #fff;
+  border: 1.5px solid var(--c2);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c4);
+  outline: none;
+  width: 100%;
+}
+.input-field-custom:focus {
+  border-color: var(--c3);
+  box-shadow: 0 0 0 2px var(--c1);
+}
+.submit-slot-btn {
+  background: var(--c4);
+  color: #fff;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-craft);
+  font-size: 16px;
+  font-weight: 700;
+  border: 1px solid var(--c4);
+  transition: all .2s;
+  white-space: nowrap;
+}
+.submit-slot-btn:hover {
+  background: #009990;
+  border-color: #009990;
+}
+
+/* =========================================================
+   8. Incoming Bookings & Requests Table
+   ========================================================= */
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.booking-row-card {
+  background: #fff;
+  border: 1.5px solid var(--c2);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transition: all .15s;
+}
+.booking-row-card:hover {
+  border-color: var(--c3);
+  box-shadow: var(--shadow-sm);
+}
+.student-col {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 220px;
+}
+.student-avatar-mini {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--c1);
+  border: 1px solid var(--c2);
+  color: var(--c4);
+  font-family: var(--font-craft);
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.student-name {
+  font-family: var(--font-craft);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c4);
+  margin-bottom: 2px;
+}
+.student-level {
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 600;
+}
+
+.booking-details-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+.subject-pill {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c4);
+}
+.time-detail {
+  font-size: 12px;
+  color: var(--c3);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.price-tag {
+  background: var(--c1);
+  color: var(--c4);
+  border: 1px solid var(--c2);
+  padding: 1px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.booking-actions-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-accept {
+  background: #009990;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: var(--font-craft);
+  font-size: 15px;
+  font-weight: 700;
+  border: 1px solid #009990;
+  transition: all .15s;
+}
+.btn-accept:hover { background: #008078; }
+.btn-reschedule {
+  background: var(--c1);
+  color: var(--c4);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--font-craft);
+  font-size: 15px;
+  font-weight: 700;
+  border: 1px solid var(--c2);
+  transition: all .15s;
+}
+.btn-reschedule:hover { background: var(--c2); }
+.btn-cancel {
+  background: transparent;
+  color: #DC2626;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition: all .15s;
+}
+.btn-cancel:hover { background: #FEF2F2; }
+
+/* =========================================================
+   9. Side Column Widgets
+   ========================================================= */
+.side-widget {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 2px solid var(--c2);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
+}
+.side-widget-title {
+  font-family: var(--font-craft);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c4);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid var(--c2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Today's Next Live Session Card */
+.live-session-card {
+  background: linear-gradient(135deg, var(--c4), #0A3275);
+  color: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  border: 2px solid var(--c3);
+  box-shadow: var(--shadow-md);
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.live-badge-pulse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #EF4444;
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  width: fit-content;
+}
+.pulse-circle {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pulseAnim 1.5s infinite;
+}
+@keyframes pulseAnim {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.7; }
+}
+.live-student-info h4 {
+  font-family: var(--font-craft);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.live-subject-text {
+  font-size: 13px;
+  color: var(--c2);
+}
+.countdown-box {
+  background: rgba(227, 242, 253, 0.12);
+  border: 1px solid var(--c2);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--c1);
+}
+.countdown-timer {
+  font-family: var(--font-craft);
+  font-size: 24px;
+  color: #E1FFBB;
+  margin-top: 2px;
+}
+.btn-enter-room {
+  background: #009990;
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  text-align: center;
+  font-family: var(--font-craft);
+  font-size: 18px;
+  font-weight: 700;
+  border: 1px solid rgba(255,255,255,0.4);
+  transition: all .2s;
+  box-shadow: var(--shadow-sm);
+}
+.btn-enter-room:hover {
+  background: #00b3a8;
+  transform: translateY(-2px);
+}
+
+/* Availability Preferences */
+.pref-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--c1);
+  font-size: 13px;
+  font-weight: 600;
+}
+.pref-item:last-child { border-bottom: none; }
+.toggle-switch {
+  width: 44px;
+  height: 24px;
+  background: #009990;
+  border-radius: 12px;
+  position: relative;
+  cursor: pointer;
+}
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: all .2s;
+}
+
+/* Quick Notes Box */
+.notes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.note-card {
+  background: var(--c1);
+  border: 1px solid var(--c2);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.note-head {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  color: var(--c4);
+  margin-bottom: 4px;
+}
+
+/* =========================================================
+   10. Footer
+   ========================================================= */
+.site-footer {
+  width: 100%;
+  background: var(--c4);
+  color: var(--c1);
+  border-top: 4px solid var(--c2);
+  text-align: right;
+  padding: 24px;
+  margin-top: 40px;
+}
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.footer-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--c2);
+}
+
+/* =========================================================
+   11. Responsive
+   ========================================================= */
+@media (max-width: 1080px) {
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .form-inline-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-metrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .timetable-grid { grid-template-columns: 1fr; }
+  .form-inline-grid { grid-template-columns: 1fr; }
+  .booking-row-card { flex-direction: column; align-items: flex-start; }
+  .booking-actions-col { width: 100%; justify-content: flex-end; }
+  .hero-top-row { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ======================= Header ======================= -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-start">
+      <div class="logo-badge">
+        <span>تعلَّم</span>
+      </div>
+      <nav class="header-nav">
+        <a href="#">الرئيسية</a>
+        <a class="active" href="#">جدول المواعيد والحجوزات</a>
+        <a href="#">المقررات والدروس</a>
+        <a href="#">الطلاب والتقييمات</a>
+        <a href="#">المحفظة المالية</a>
+      </nav>
+    </div>
+    <div>
+      <a class="header-back-btn" href="#">
+        <span>العودة للرئيسية</span>
+        <span>←</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="site-main">
+  <div class="container">
+
+    <!-- ======================= Teacher Hero Card ======================= -->
+    <section class="teacher-hero">
+      <div class="hero-top-row">
+        <div class="teacher-info-group">
+          <div class="teacher-avatar">
+            <span>ش</span>
+            <div class="teacher-badge-verified">✓</div>
+          </div>
+          <div class="teacher-titles">
+            <h1>د. عبد الرحمن الشهري</h1>
+            <div class="teacher-tagline">
+              <span class="teacher-role-tag">معلم أول معتمد</span>
+              <span>•</span>
+              <span>مسار الرياضيات والفيزياء المتقدمة (المناهج السعودية + البريطانية IGCSE)</span>
+              <span>•</span>
+              <span>الرياض، المملكة العربية السعودية</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn-primary-action" onclick="document.getElementById('quickAddSlotSection').scrollIntoView({behavior: 'smooth'})" type="button">
+            <span>+</span>
+            <span>إضافة فترات متاحة جديدة</span>
+          </button>
+          <button class="btn-secondary-action" type="button">
+            <span>مزامنة التقويم الأكاديمي</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Metrics Row -->
+      <div class="hero-metrics-grid">
+        <div class="metric-box">
+          <div class="metric-label">تقييم الطلاب العام</div>
+          <div class="metric-val">4.9 ★</div>
+          <div class="metric-sub">من أصل 520 طالب ومستفيد</div>
+        </div>
+
+        <div class="metric-box">
+          <div class="metric-label">ساعات تدريس متاحة هذا الأسبوع</div>
+          <div class="metric-val">22 ساعة</div>
+          <div class="metric-sub">جاهزة للحجز الفوري</div>
+        </div>
+
+        <div class="metric-box">
+          <div class="metric-label">حصص مؤكدة قادمة</div>
+          <div class="metric-val">14 جلسة</div>
+          <div class="metric-sub">خلال الأيام الـ 5 القادمة</div>
+        </div>
+
+        <div class="metric-box">
+          <div class="metric-label">إجمالي الحصص المنجزة</div>
+          <div class="metric-val">380 حصة</div>
+          <div class="metric-sub">بنسبة التزام صفي 99%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================= Main 2-Column Grid ======================= -->
+    <div class="dashboard-grid">
+
+      <!-- Right/Main Column -->
+      <div class="main-column">
+
+        <!-- Panel 1: Timetable & Schedule Management -->
+        <div class="panel-card">
+          <div class="panel-head">
+            <div class="panel-title-group">
+              <div class="panel-icon-badge">📅</div>
+              <h2 class="panel-title">إدارة المواعيد المتاحة وجدول الحصص الأسبوعي</h2>
+            </div>
+            <div class="legend-group">
+              <div class="legend-item"><span class="dot dot-avail"></span><span>متاح للحجز</span></div>
+              <div class="legend-item"><span class="dot dot-booked"></span><span>محجوز ومؤكد</span></div>
+              <div class="legend-item"><span class="dot dot-pending"></span><span>طلب قيد التأكيد</span></div>
+              <div class="legend-item"><span class="dot dot-blocked"></span><span>مغلق / استراحة</span></div>
+            </div>
+          </div>
+
+          <div class="panel-body">
+            <!-- Week Navigator -->
+            <div class="calendar-controls-bar">
+              <div class="week-navigator">
+                <button class="nav-arrow-btn" type="button">→</button>
+                <span class="current-week-title">الأسبوع الحالي: 18 - 22 مايو 2025</span>
+                <button class="nav-arrow-btn" type="button">←</button>
+              </div>
+              <div style="font-size: 13px; font-weight: 700; color: var(--c4);">
+                <span>التوقيت الأكاديمي: بتوقيت مكة المكرمة (GMT +3)</span>
+              </div>
+            </div>
+
+            <!-- Weekly Columns -->
+            <div class="timetable-grid">
+
+              <!-- Sunday -->
+              <div class="day-column">
+                <div class="day-head">
+                  <div class="day-name">الأحد</div>
+                  <div class="day-date">18 مايو</div>
+                </div>
+                <div class="slots-container">
+                  <div class="time-slot-card slot-available">
+                    <span class="slot-time">04:00 م - 05:00 م</span>
+                    <span class="slot-title">متاح للحجز (فردي)</span>
+                    <span class="slot-meta">رياضيات متقدمة</span>
+                  </div>
+                  <div class="time-slot-card slot-booked">
+                    <span class="slot-time">05:30 م - 06:30 م</span>
+                    <span class="slot-title">أحمد المنصور</span>
+                    <span class="slot-meta">تفاضل وتكامل • قاعة 1</span>
+                  </div>
+                  <div class="time-slot-card slot-blocked">
+                    <span class="slot-time">07:00 م - 07:30 م</span>
+                    <span class="slot-title">استراحة أكاديمية</span>
+                  </div>
+                </div>
+                <button class="add-slot-day-btn" type="button">+ إضافة وقت</button>
+              </div>
+
+              <!-- Monday -->
+              <div class="day-column">
+                <div class="day-head">
+                  <div class="day-name">الإثنين</div>
+                  <div class="day-date">19 مايو</div>
+                </div>
+                <div class="slots-container">
+                  <div class="time-slot-card slot-booked">
+                    <span class="slot-time">04:00 م - 05:00 م</span>
+                    <span class="slot-title">مجموعة الرواد (4 طلاب)</span>
+                    <span class="slot-meta">فيزياء - ميكانيكا نيوتن</span>
+                  </div>
+                  <div class="time-slot-card slot-pending">
+                    <span class="slot-time">05:30 م - 06:30 م</span>
+                    <span class="slot-title">طلب جديد: سارة الشهري</span>
+                    <span class="slot-meta">IGCSE Physics Core</span>
+                  </div>
+                  <div class="time-slot-card slot-available">
+                    <span class="slot-time">07:00 م - 08:00 م</span>
+                    <span class="slot-title">متاح للحجز (فردي)</span>
+                    <span class="slot-meta">تحصيلي وقدرات</span>
+                  </div>
+                </div>
+                <button class="add-slot-day-btn" type="button">+ إضافة وقت</button>
+              </div>
+
+              <!-- Tuesday (Today) -->
+              <div class="day-column today">
+                <div class="day-head">
+                  <div class="day-name">الثلاثاء (اليوم)</div>
+                  <div class="day-date">20 مايو</div>
+                </div>
+                <div class="slots-container">
+                  <div class="time-slot-card slot-booked" style="border-right: 4px solid #009990;">
+                    <span class="slot-time">03:30 م - 04:30 م</span>
+                    <span class="slot-title">فيصل القحطاني</span>
+                    <span class="slot-meta">ميكانيكا كلاسيكية (مباشر)</span>
+                  </div>
+                  <div class="time-slot-card slot-booked">
+                    <span class="slot-time">05:00 م - 06:00 م</span>
+                    <span class="slot-title">محمد العتيبي</span>
+                    <span class="slot-meta">ورشة مسائل التفاضل</span>
+                  </div>
+                  <div class="time-slot-card slot-available">
+                    <span class="slot-time">06:30 م - 07:30 م</span>
+                    <span class="slot-title">متاح للحجز</span>
+                    <span class="slot-meta">أي مسار معتمد</span>
+                  </div>
+                </div>
+                <button class="add-slot-day-btn" type="button">+ إضافة وقت</button>
+              </div>
+
+              <!-- Wednesday -->
+              <div class="day-column">
+                <div class="day-head">
+                  <div class="day-name">الأربعاء</div>
+                  <div class="day-date">21 مايو</div>
+                </div>
+                <div class="slots-container">
+                  <div class="time-slot-card slot-available">
+                    <span class="slot-time">04:00 م - 05:00 م</span>
+                    <span class="slot-title">متاح للحجز</span>
+                    <span class="slot-meta">رياضيات ثانوية</span>
+                  </div>
+                  <div class="time-slot-card slot-available">
+                    <span class="slot-time">05:15 م - 06:15 م</span>
+                    <span class="slot-title">متاح للحجز</span>
+                    <span class="slot-meta">ورشة عمل</span>
+                  </div>
+                  <div class="time-slot-card slot-booked">
+                    <span class="slot-time">06:45 م - 07:45 م</span>
+                    <span class="slot-title">نورة السبيعي</span>
+                    <span class="slot-meta">Cambridge A-Level</span>
+                  </div>
+                </div>
+                <button class="add-slot-day-btn" type="button">+ إضافة وقت</button>
+              </div>
+
+              <!-- Thursday -->
+              <div class="day-column">
+                <div class="day-head">
+                  <div class="day-name">الخميس</div>
+                  <div class="day-date">22 مايو</div>
+                </div>
+                <div class="slots-container">
+                  <div class="time-slot-card slot-available">
+                    <span class="slot-time">03:00 م - 04:00 م</span>
+                    <span class="slot-title">متاح للحجز</span>
+                    <span class="slot-meta">مراجعة عامة</span>
+                  </div>
+                  <div class="time-slot-card slot-available">
+                    <span class="slot-time">04:30 م - 05:30 م</span>
+                    <span class="slot-title">متاح للحجز</span>
+                    <span class="slot-meta">حل تدريبات قياس</span>
+                  </div>
+                  <div class="time-slot-card slot-blocked">
+                    <span class="slot-time">06:00 م - 08:00 م</span>
+                    <span class="slot-title">فترة مغلقة شخصية</span>
+                  </div>
+                </div>
+                <button class="add-slot-day-btn" type="button">+ إضافة وقت</button>
+              </div>
+
+            </div>
+
+            <!-- Quick Add Time Slot Inline Form -->
+            <div class="quick-add-form-wrapper" id="quickAddSlotSection">
+              <div class="quick-add-title">
+                <span>➕</span>
+                <span>إتاحة أوقات تدريس جديدة للطلاب فوراً</span>
+              </div>
+              <div class="form-inline-grid">
+                <div class="input-control-group">
+                  <label>اليوم الأكاديمي</label>
+                  <select class="input-field-custom">
+                    <option>الأحد (18 مايو)</option>
+                    <option>الإثنين (19 مايو)</option>
+                    <option selected>الثلاثاء (20 مايو)</option>
+                    <option>الأربعاء (21 مايو)</option>
+                    <option>الخميس (22 مايو)</option>
+                  </select>
+                </div>
+
+                <div class="input-control-group">
+                  <label>فترة البدء والانتهاء</label>
+                  <select class="input-field-custom">
+                    <option>04:00 م - 05:00 م (60 دقيقة)</option>
+                    <option selected>05:30 م - 06:30 م (60 دقيقة)</option>
+                    <option>07:00 م - 08:00 م (60 دقيقة)</option>
+                    <option>08:15 م - 09:15 م (60 دقيقة)</option>
+                  </select>
+                </div>
+
+                <div class="input-control-group">
+                  <label>نوع ونمط الجلسة</label>
+                  <select class="input-field-custom">
+                    <option>حصة فردية خاصة (1:1)</option>
+                    <option>مجموعة صغيرة (حتى 4 طلاب)</option>
+                    <option>ورشة عمل تفاعلية مفتوحة</option>
+                  </select>
+                </div>
+
+                <div class="input-control-group">
+                  <label>المسار المستهدف</label>
+                  <select class="input-field-custom">
+                    <option>الرياضيات والفيزياء المتقدمة</option>
+                    <option>القدرات العامة والتحصيلي</option>
+                    <option>المناهج الدولية (IGCSE & SAT)</option>
+                  </select>
+                </div>
+
+                <div class="input-control-group">
+                  <label>السعر / الرصيد (ريال)</label>
+                  <input class="input-field-custom" type="number" value="180">
+                </div>
+
+                <button class="submit-slot-btn" type="button">نشر وإتاحة الموعد</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Panel 2: Incoming Requests & Waiting Approvals -->
+        <div class="panel-card">
+          <div class="panel-head">
+            <div class="panel-title-group">
+              <div class="panel-icon-badge">📩</div>
+              <h2 class="panel-title">طلبات الحجز الواردة وقائمة الانتظار الأكاديمية</h2>
+            </div>
+            <span style="background: var(--c1); color: var(--c4); border: 1px solid var(--c2); padding: 4px 12px; border-radius: 8px; font-weight: 700; font-size: 13px;">
+              3 طلبات بانتظار الرد
+            </span>
+          </div>
+
+          <div class="panel-body">
+            <div class="bookings-list">
+
+              <!-- Request 1 -->
+              <div class="booking-row-card">
+                <div class="student-col">
+                  <div class="student-avatar-mini">م</div>
+                  <div>
+                    <div class="student-name">محمد بن عبد الله العتيبي</div>
+                    <div class="student-level">الثانوية العامة • مسار علمي متقدم</div>
+                  </div>
+                </div>
+
+                <div class="booking-details-col">
+                  <div class="subject-pill">مراجعة مسائل التفاضل المعقدة والمشتقات العليا</div>
+                  <div class="time-detail">
+                    <span>🗓️ الثلاثاء 20 مايو (اليوم)</span>
+                    <span>•</span>
+                    <span>⏰ 05:00 م (60 دقيقة)</span>
+                    <span>•</span>
+                    <span class="price-tag">180 ر.س (مدفوع مقدماً)</span>
+                  </div>
+                </div>
+
+                <div class="booking-actions-col">
+                  <button class="btn-accept" type="button">قبول وتوليد القاعة</button>
+                  <button class="btn-reschedule" type="button">اقتراح موعد بديل</button>
+                  <button class="btn-cancel" type="button">اعتذار</button>
+                </div>
+              </div>
+
+              <!-- Request 2 -->
+              <div class="booking-row-card">
+                <div class="student-col">
+                  <div class="student-avatar-mini" style="background: #E8F5E9; color: #2E7D32;">س</div>
+                  <div>
+                    <div class="student-name">سارة منصور الشمري</div>
+                    <div class="student-level">Cambridge IGCSE • Year 11</div>
+                  </div>
+                </div>
+
+                <div class="booking-details-col">
+                  <div class="subject-pill">Physics A-Level (Wave Mechanics & Thermal Physics)</div>
+                  <div class="time-detail">
+                    <span>🗓️ الأربعاء 21 مايو</span>
+                    <span>•</span>
+                    <span>⏰ 05:15 م (60 دقيقة)</span>
+                    <span>•</span>
+                    <span class="price-tag">240 ر.س (محفظة الطالب)</span>
+                  </div>
+                </div>
+
+                <div class="booking-actions-col">
+                  <button class="btn-accept" type="button">قبول وتوليد القاعة</button>
+                  <button class="btn-reschedule" type="button">اقتراح موعد بديل</button>
+                  <button class="btn-cancel" type="button">اعتذار</button>
+                </div>
+              </div>
+
+              <!-- Request 3 -->
+              <div class="booking-row-card">
+                <div class="student-col">
+                  <div class="student-avatar-mini" style="background: #FFF3E0; color: #E65100;">ر</div>
+                  <div>
+                    <div class="student-name">ريان خالد الدوسري</div>
+                    <div class="student-level">التحضير لاختبار القدرات العامة والتحصيلي</div>
+                  </div>
+                </div>
+
+                <div class="booking-details-col">
+                  <div class="subject-pill">استراتيجيات الحل السريع للمسائل الهندسية المعقدة</div>
+                  <div class="time-detail">
+                    <span>🗓️ الخميس 22 مايو</span>
+                    <span>•</span>
+                    <span>⏰ 04:30 م (60 دقيقة)</span>
+                    <span>•</span>
+                    <span class="price-tag">180 ر.س (مؤكد)</span>
+                  </div>
+                </div>
+
+                <div class="booking-actions-col">
+                  <button class="btn-accept" type="button">قبول وتوليد القاعة</button>
+                  <button class="btn-reschedule" type="button">اقتراح موعد بديل</button>
+                  <button class="btn-cancel" type="button">اعتذار</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Left Column / Side Widgets -->
+      <div class="side-column">
+
+        <!-- Live Session Card -->
+        <div class="live-session-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="live-badge-pulse">
+              <span class="pulse-circle"></span>
+              <span>الحصة المباشرة القادمة</span>
+            </div>
+            <span style="font-size: 12px; font-weight: 700; color: var(--c2);">قاعة رقم 4</span>
+          </div>
+
+          <div class="live-student-info">
+            <h4>فيصل بن صالح القحطاني</h4>
+            <div class="live-subject-text">فيزياء: قوانين نيوتن وتطبيقات الحركة الدائرية</div>
+          </div>
+
+          <div class="countdown-box">
+            <div>موعد البدء بعد:</div>
+            <div class="countdown-timer">00:38:15</div>
+            <div style="font-size: 11px; opacity: 0.8; margin-top: 2px;">الساعة 03:30 م تماماً</div>
+          </div>
+
+          <button class="btn-enter-room" type="button">
+            دخول القاعة التفاعلية الآن 🎥
+          </button>
+        </div>
+
+        <!-- Availability Smart Preferences -->
+        <div class="side-widget">
+          <div class="side-widget-title">
+            <span>⚙️</span>
+            <span>تفضيلات التوافر الذكي</span>
+          </div>
+
+          <div class="pref-item">
+            <div>
+              <div style="color: var(--c4); font-weight: 700;">الحد الأقصى للجلسات يومياً</div>
+              <div style="font-size: 11px; color: #64748B;">يمنع النظام تلقائياً أي حجز يتجاوز السقف</div>
+            </div>
+            <span style="background: var(--c1); padding: 4px 10px; border-radius: 6px; font-weight: 700;">5 حصص</span>
+          </div>
+
+          <div class="pref-item">
+            <div>
+              <div style="color: var(--c4); font-weight: 700;">الفاصل الزمني بين الحصص</div>
+              <div style="font-size: 11px; color: #64748B;">فترة راحة تلقائية بين كل موعد وآخر</div>
+            </div>
+            <span style="background: var(--c1); padding: 4px 10px; border-radius: 6px; font-weight: 700;">15 دقيقة</span>
+          </div>
+
+          <div class="pref-item">
+            <div>
+              <div style="color: var(--c4); font-weight: 700;">مهلة الحجز المسبق</div>
+              <div style="font-size: 11px; color: #64748B;">أقصر مهلة زمنية مسموحة قبل بدء الحصة</div>
+            </div>
+            <span style="background: var(--c1); padding: 4px 10px; border-radius: 6px; font-weight: 700;">4 ساعات</span>
+          </div>
+
+          <div class="pref-item">
+            <div>
+              <div style="color: var(--c4); font-weight: 700;">القبول التلقائي للحجوزات</div>
+              <div style="font-size: 11px; color: #64748B;">تثبيت الموعد فور سداد الطالب المعتمد</div>
+            </div>
+            <div class="toggle-switch"></div>
+          </div>
+        </div>
+
+        <!-- Student Instructions & Notice -->
+        <div class="side-widget">
+          <div class="side-widget-title">
+            <span>📝</span>
+            <span>إرشادات تظهر للطلاب عند الحجز</span>
+          </div>
+
+          <div class="notes-container">
+            <div class="note-card">
+              <div class="note-head">
+                <span>تنبيه الحضور المبكر</span>
+                <span style="color: #009990;">مفعل</span>
+              </div>
+              <div>يرجى تجهيز أوراق المسائل والملاحظات الأكاديمية قبل موعد الحصة بـ 5 دقائق، مع التأكد من جاهزية المايكروفون والاتصال المستقر.</div>
+            </div>
+
+            <div class="note-card">
+              <div class="note-head">
+                <span>سياسة الإلغاء وإعادة الجدولة</span>
+                <span style="color: #009990;">مفعل</span>
+              </div>
+              <div>يمكن تعديل أو إلغاء الموعد قبل 6 ساعات على الأقل من بدء الجلسة مع الحفاظ على كامل الرصيد الأكاديمي.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</main>
+
+<!-- ======================= Footer ======================= -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <span>© 2026 منصة تعلَّم التعليمية. كافة الحقوق محفوظة للكوادر التعليمية المعتمدة.</span>
+    </div>
+    <div class="footer-meta">
+      <span>مؤسسة تعليمية مرخصة</span>
+      <span>◆</span>
+      <span>بوابة شؤون المعلمين والأكاديميين</span>
+      <span>◆</span>
+      <span>الرياض، المملكة العربية السعودية</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
