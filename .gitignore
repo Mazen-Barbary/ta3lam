@@ -1,3 +1,4 @@
 node_modules
 .env
-ta3lam.sql
+ta3lam.sql.env
+node_modules

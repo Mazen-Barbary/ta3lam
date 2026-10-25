@@ -7,7 +7,6 @@ import session from "express-session";
 import passport from "passport";
 import { Strategy } from "passport-local";
 import path from "path";
-import fs from "fs";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
 import env from "dotenv";
@@ -28,14 +27,6 @@ app.set("view engine", "ejs");
 app.use(express.static("public")); // FIX: serves /css, /uploads, scripts, images
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const uploadDir = "public/uploads";
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const photosDir = path.join(uploadDir, "teachers");
-fs.mkdirSync(photosDir, { recursive: true });
-
 // Teacher photos: kept in memory first so we can check the real file type before saving anything.
 const photoUpload = multer({
   storage: multer.memoryStorage(),
@@ -50,7 +41,7 @@ function imageType(buf) {
   return null;
 }
 const removePhoto = (name) => {
-  if (name) fs.promises.unlink(path.join(photosDir, path.basename(name))).catch(() => {});
+  if (name) db.query("DELETE FROM teacher_photos WHERE name = $1", [path.basename(name)]).catch(() => {});
 };
 
 // Online (Neon): set DATABASE_URL. Locally: the old settings below still work.
@@ -59,7 +50,7 @@ const db = new pg.Pool(
     ? {
         connectionString: process.env.DATABASE_URL,
         ssl: /localhost|127\.0\.0\.1/.test(process.env.DATABASE_URL) ? false : true,
-        max: 10,
+        max: 5,
         idleTimeoutMillis: 20000, // drop idle connections before Neon suspends them
         connectionTimeoutMillis: 15000, // allow time for Neon to wake up
       }
@@ -78,8 +69,26 @@ db.query("ALTER TABLE teachers ADD COLUMN IF NOT EXISTS photo TEXT").catch((e) =
   console.error("Could not add teachers.photo column:", e.message)
 );
 
+// Teacher photos live in the database (Vercel's filesystem is read-only and not persistent)
+db.query(
+  "CREATE TABLE IF NOT EXISTS teacher_photos (name TEXT PRIMARY KEY, mime TEXT NOT NULL, data BYTEA NOT NULL)"
+).catch((e) => console.error("Could not create teacher_photos table:", e.message));
+
+app.get("/uploads/teachers/:name", async (req, res) => {
+  try {
+    const r = await db.query("SELECT mime, data FROM teacher_photos WHERE name = $1", [path.basename(req.params.name)]);
+    if (!r.rowCount) return res.status(404).end();
+    res.set("Content-Type", r.rows[0].mime);
+    res.set("Cache-Control", "public, max-age=31536000, immutable");
+    res.send(r.rows[0].data);
+  } catch (e) {
+    console.error("Photo load failed:", e.message);
+    res.status(500).end();
+  }
+});
+
 const isProd = process.env.NODE_ENV === "production";
-if (!process.env.SESSION_SECRET) throw new Error("SESSION_SECRET is missing in .env");
+if (!process.env.SESSION_SECRET) throw new Error("SESSION_SECRET is missing (set it in .env locally or in Vercel > Settings > Environment Variables)");
 if (isProd) app.set("trust proxy", 1);
 
 // CSP is off because your pages use inline scripts, Google Fonts and external images
@@ -158,11 +167,14 @@ const fmtTime = (t) => {
 const fmtDate = (s) =>
   new Date(`${s}T00:00:00`).toLocaleDateString("ar", { weekday: "long", day: "numeric", month: "long" });
 const fmtMonth = (d) => new Date(d).toLocaleDateString("ar", { month: "long", year: "numeric" });
-const isUpcoming = (r) => new Date(`${r.slot_date}T${r.start_time}`) >= new Date();
+// Vercel servers run in UTC, so "now" is computed in the site's own timezone (set APP_TIMEZONE to change it)
+const APP_TZ = process.env.APP_TIMEZONE || "Africa/Cairo";
+const wallNow = () => new Date(new Date().toLocaleString("en-US", { timeZone: APP_TZ }));
+const isUpcoming = (r) => new Date(`${r.slot_date}T${r.start_time}`) >= wallNow();
 
 // "now" in the server's local time, so it matches how teachers' times are entered
 const nowLocal = () => {
-  const d = new Date();
+  const d = wallNow();
   return `${ymd(d)} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 };
 
@@ -633,7 +645,7 @@ app.post("/bookings/:id/cancel", ensureAuthenticated, async (req, res) => {
 const ZOOM_ID = process.env.ZOOM_CLIENT_ID || "";
 const ZOOM_SECRET = process.env.ZOOM_CLIENT_SECRET || "";
 const ZOOM_REDIRECT = process.env.ZOOM_REDIRECT_URI || `http://localhost:${port}/zoom/callback`;
-const ZOOM_TZ = process.env.ZOOM_TIMEZONE || Intl.DateTimeFormat().resolvedOptions().timeZone;
+const ZOOM_TZ = process.env.ZOOM_TIMEZONE || APP_TZ;
 const zoomEnabled = !!(ZOOM_ID && ZOOM_SECRET);
 // only real Zoom links are accepted when a teacher pastes one (students will click it)
 const ZOOM_LINK_RE = /^https:\/\/([a-z0-9-]+\.)*zoom\.(us|com)\/[^\s]*$/i;
@@ -819,13 +831,13 @@ app.post("/teacher/zoom/disconnect", requireRole("teacher"), async (req, res) =>
 app.get("/teacher", requireRole("teacher"), async (req, res) => {
   const tid = req.user.id;
   const now = nowLocal();
-  const today = ymd(new Date());
+  const today = ymd(wallNow());
   const teacher = (await db.query("SELECT * FROM teachers WHERE user_id = $1", [tid])).rows[0];
 
    const DAYS = 7; // today + the next 6 days, so Saturday and Sunday always appear
   const days = [];
   for (let i = 0; i < DAYS; i++) {
-    const d = new Date();
+    const d = wallNow();
     d.setDate(d.getDate() + i);
     days.push({
       key: ymd(d),
@@ -898,7 +910,7 @@ app.post("/teacher/slots", requireRole("teacher"), async (req, res) => {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(slot_date) || !/^\d{2}:\d{2}$/.test(start_time) || !/^\d{2}:\d{2}$/.test(end_time))
     return back("error", "الرجاء تعبئة جميع الحقول.");
   if (end_time <= start_time) return back("error", "وقت النهاية يجب أن يكون بعد وقت البداية.");
-  if (new Date(`${slot_date}T${start_time}`) < new Date()) return back("error", "لا يمكن إضافة موعد في الماضي.");
+  if (new Date(`${slot_date}T${start_time}`) < wallNow()) return back("error", "لا يمكن إضافة موعد في الماضي.");
 
   const capacity = parseInt(req.body.capacity, 10);
 if (!Number.isInteger(capacity) || capacity < 1 || capacity > 50)
@@ -996,7 +1008,8 @@ app.post("/teacher/photo", requireRole("teacher"), (req, res) => {
     if (!ext) return back("error", "الصيغة غير مدعومة. استخدم JPG أو PNG أو WEBP.");
     try {
       const name = `${req.user.id}-${crypto.randomBytes(8).toString("hex")}.${ext}`;
-      await fs.promises.writeFile(path.join(photosDir, name), req.file.buffer);
+      const MIME = { jpg: "image/jpeg", png: "image/png", webp: "image/webp" };
+      await db.query("INSERT INTO teacher_photos (name, mime, data) VALUES ($1, $2, $3)", [name, MIME[ext], req.file.buffer]);
       const old = (await db.query("SELECT photo FROM teachers WHERE user_id = $1", [req.user.id])).rows[0]?.photo;
       await db.query("UPDATE teachers SET photo = $1 WHERE user_id = $2", [name, req.user.id]);
       removePhoto(old);
@@ -1099,8 +1112,8 @@ app.post("/admin/teachers/:id/delete", requireRole("moderator"), async (req, res
         await db.query(
           `SELECT zoom_meeting_id FROM teacher_availability
             WHERE teacher_id = $1 AND zoom_meeting_id IS NOT NULL AND status <> 'cancelled'
-              AND slot_datetime >= now() LIMIT 200`,
-          [id]
+              AND slot_datetime >= $2::timestamp LIMIT 200`,
+          [id, nowLocal()]
         )
       ).rows;
       await Promise.allSettled(metas.map((m) => deleteZoomMeeting(id, m.zoom_meeting_id)));
@@ -1125,8 +1138,8 @@ app.post("/admin/teachers/:id/delete", requireRole("moderator"), async (req, res
       await client.query(
         `SELECT COUNT(*)::int AS n FROM bookings b
            JOIN teacher_availability a ON a.id = b.availability_id
-          WHERE a.teacher_id = $1 AND b.status = 'confirmed' AND a.slot_datetime >= now()`,
-        [id]
+          WHERE a.teacher_id = $1 AND b.status = 'confirmed' AND a.slot_datetime >= $2::timestamp`,
+        [id, nowLocal()]
       )
     ).rows[0].n;
     await client.query(
@@ -1197,6 +1210,10 @@ async function seedModerator() {
 }
 seedModerator().catch((e) => console.error("Moderator seed failed:", e));
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
+
+export default app; // Vercel runs the app through this export
