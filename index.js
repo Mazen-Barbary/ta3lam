@@ -94,10 +94,22 @@ if (isProd) app.set("trust proxy", 1);
 // CSP is off because your pages use inline scripts, Google Fonts and external images
 app.use(helmet({ contentSecurityPolicy: false, referrerPolicy: { policy: "same-origin" } }));
 
+// Create the session table ourselves (connect-pg-simple's own auto-create reads a .sql file that Vercel may not bundle)
+try {
+  await db.query(`CREATE TABLE IF NOT EXISTS "session" (
+    "sid" varchar NOT NULL COLLATE "default" PRIMARY KEY,
+    "sess" json NOT NULL,
+    "expire" timestamp(6) NOT NULL
+  )`);
+  await db.query('CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON "session" ("expire")');
+} catch (e) {
+  console.error("Could not create session table:", e.message);
+}
+
 const PgStore = connectPgSimple(session);
 app.use(
   session({
-    store: new PgStore({ pool: db, createTableIfMissing: true }),
+    store: new PgStore({ pool: db, createTableIfMissing: false }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -1191,6 +1203,13 @@ passport.deserializeUser(async (id, cb) => {
 });
 
 app.use((req, res) => res.status(404).send("الصفحة غير موجودة"));
+
+// last-resort error handler: log the real cause (visible in Vercel Logs) and show a plain message
+app.use((err, req, res, next) => {
+  console.error("Unhandled error on", req.method, req.path, "->", err && err.stack ? err.stack : err);
+  if (res.headersSent) return next(err);
+  res.status(500).send("حدث خطأ في الخادم، حاول مرة أخرى.");
+});
 
 async function seedModerator() {
   const email = str(process.env.MODERATOR_EMAIL).toLowerCase();
